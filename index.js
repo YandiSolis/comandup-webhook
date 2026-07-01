@@ -3,26 +3,28 @@ const express = require('express');
 const axios = require('axios');
 
 const app = express();
-// Permite que el servidor entienda datos en formato JSON
-app.use(express.json()); 
+app.use(express.json());
 
-// Esta es la ruta o "puerta" que Dolibarr tocará cuando pase algo
-app.post('/webhook/alertas', (req, res) => {
-    const datosRecibidos = req.body;
+app.post('/webhook/alertas', async (req, res) => {
+    const datos = req.body;
     
-    console.log('🚨 ¡ALERTA COMANDUP! Nueva actividad detectada en el ERP:');
-    console.log(datosRecibidos);
+    // Verificamos si es una cancelación
+    if (datos.evento === 'cancelacion_ticket') {
+        const urlGreenAPI = `https://api.green-api.com/waInstance${process.env.ID_INSTANCE}/sendMessage/${process.env.API_TOKEN_INSTANCE}`;
+        
+        try {
+            await axios.post(urlGreenAPI, {
+                chatId: process.env.PHONE_GERENTE,
+                message: `🚨 ALERTA COMANDUP: Se ha cancelado el ticket ${datos.id_ticket}. Monto: $${datos.total}. Motivo: ${datos.motivo}`
+            });
+            console.log('✅ Alerta enviada a WhatsApp');
+        } catch (error) {
+            console.error('❌ Error al enviar mensaje:', error.message);
+        }
+    }
 
-    // TODO para Eduardo: 
-    // 1. Filtrar si la alerta es una cancelación de ticket.
-    // 2. Usar axios para disparar el mensaje de WhatsApp.
-
-    // Siempre debemos responderle al ERP que recibimos el mensaje
-    res.status(200).send('Webhook recibido correctamente por el servidor Node');
+    res.status(200).send('Webhook procesado');
 });
 
-// Encendemos el servidor en el puerto 3000
-const PUERTO = 3000;
-app.listen(PUERTO, () => {
-    console.log(`🚀 Servidor Webhook encendido y escuchando en el puerto ${PUERTO}`);
-});
+const PUERTO = process.env.PORT || 3000;
+app.listen(PUERTO, () => console.log(`🚀 Servidor en puerto ${PUERTO}`));
