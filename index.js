@@ -27,4 +27,6 @@ app.post('/webhook/alertas', async (req, res) => {
 });
 
 const PUERTO = process.env.PORT || 3000;
-app.listen(PUERTO, () => console.log(`🚀 Servidor en puerto ${PUERTO}`));
+app.listen(PUERTO, '0.0.0.0', () => {
+    console.log(`🚀 Servidor de ComandUp escuchando en el puerto ${PUERTO}`);
+});
