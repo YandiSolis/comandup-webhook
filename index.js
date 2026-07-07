@@ -14,22 +14,34 @@ app.get('/', (req, res) => {
 app.post('/webhook/alertas', async (req, res) => {
     const datos = req.body;
     console.log("📥 ¡Petición recibida en el servidor! Datos:", datos);
-    
-    if (datos.evento === 'cancelacion_ticket') {
-        const urlGreenAPI = `https://api.green-api.com/waInstance${process.env.ID_INSTANCE}/sendMessage/${process.env.API_TOKEN_INSTANCE}`;
+
+    // Verificamos si Dolibarr mandó un código de evento válido (Validación o Cancelación)
+    if (datos.triggercode === 'BILL_VALIDATE' || datos.triggercode === 'BILL_CANCEL' || datos.triggercode === 'ORDER_CANCEL') {
         
+        // Armamos el mensaje dinámico
+        const mensajeWhatsApp = `⚠️ *Alerta ComandUp* ⚠️\nSe ha detectado un nuevo movimiento en el sistema.\nAcción: ${datos.triggercode}`;
+
         try {
-            await axios.post(urlGreenAPI, {
+            // Aquí haces tu petición a GreenAPI con Axios
+            const urlGreenAPI = `https://1103.api.greenapi.com/waInstance${process.env.ID_INSTANCE}/sendMessage/${process.env.TOKEN_INSTANCE}`;
+            
+            const payload = {
                 chatId: process.env.PHONE_GERENTE,
-                message: `🚨 ALERTA COMANDUP: Se ha cancelado el ticket ${datos.id_ticket}. Monto: $${datos.total}. Motivo: ${datos.motivo}`
-            });
-            console.log('✅ Mensaje de WhatsApp enviado correctamente');
+                message: mensajeWhatsApp
+            };
+
+            await axios.post(urlGreenAPI, payload);
+            console.log("✅ Mensaje de WhatsApp enviado correctamente");
+
         } catch (error) {
-            console.error('❌ Error al enviar WhatsApp:', error.message);
+            console.error("❌ Error al enviar WhatsApp:", error.message);
         }
+    } else {
+        console.log("Evento ignorado, no es una cancelación ni validación.");
     }
 
-    res.status(200).send('Webhook procesado con éxito');
+    // Siempre hay que responderle a Dolibarr para que no se quede colgado
+    res.status(200).send("Webhook procesado");
 });
 
 // 3. Encendido con host 0.0.0.0 estricto
