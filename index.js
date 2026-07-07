@@ -23,7 +23,7 @@ app.post('/webhook/alertas', async (req, res) => {
 
         try {
             // Aquí haces tu petición a GreenAPI con Axios
-            const urlGreenAPI = `https://1103.api.greenapi.com/waInstance${process.env.ID_INSTANCE}/sendMessage/${process.env.TOKEN_INSTANCE}`;
+            const urlGreenAPI = `https://7107.api.greenapi.com/waInstance${process.env.ID_INSTANCE}/sendMessage/${process.env.TOKEN_INSTANCE}`;
             
             const payload = {
                 chatId: process.env.PHONE_GERENTE,
