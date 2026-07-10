@@ -74,36 +74,41 @@ app.post('/webhook/whatsapp', async (req, res) => {
     try {
         const webhookData = req.body;
 
-        // 🔍 LUPA MÁXIMA: Imprimimos TODO lo que GreenAPI nos manda
         console.log("🔔 GREENAPI TOCÓ LA PUERTA. Tipo de evento:", webhookData.typeWebhook);
 
-        // Aceptamos mensajes entrantes y también salientes (por si te escribes a ti mismo)
-        if (
-            (webhookData.typeWebhook === 'incomingMessageReceived' || webhookData.typeWebhook === 'outgoingMessageReceived') && 
-            webhookData.messageData?.typeMessage === 'textMessage'
-        ) {
-            const mensaje = webhookData.messageData.textMessageData.textMessage.trim().toLowerCase();
-            // Tomamos el ID del chat donde ocurrió la conversación
-            const chatId = webhookData.senderData.chatId; 
+        // Solo procesamos si es un mensaje que entra o que sale
+        if (webhookData.typeWebhook === 'incomingMessageReceived' || webhookData.typeWebhook === 'outgoingMessageReceived') {
+            
+            const messageData = webhookData.messageData || {};
+            let mensajeBruto = "";
 
-            console.log(`💬 Mensaje de texto leído en el chat: "${mensaje}"`);
+            // Buscamos el texto en las dos formas en que GreenAPI lo suele esconder
+            if (messageData.typeMessage === 'textMessage') {
+                mensajeBruto = messageData.textMessageData?.textMessage || "";
+            } else if (messageData.typeMessage === 'extendedTextMessage') {
+                mensajeBruto = messageData.extendedTextMessageData?.text || "";
+            }
+
+            const mensaje = mensajeBruto.trim().toLowerCase();
+            const chatId = webhookData.senderData?.chatId;
+
+            console.log(`💬 Texto extraído: "${mensaje}"`);
 
             if (mensaje === '!reporte') {
                 const textoRespuesta = `📊 *CORTE DE CAJA COMANDUP* 📊\n\nHola Gerente, aquí tienes el resumen del turno hasta el momento:\n\n🧾 *Tickets cobrados:* ${ticketsAtendidos}\n💰 *Ventas totales:* $${ventasDelDia.toFixed(2)}\n\n_Tu restaurante está bajo control._`;
                 
                 const urlGreenAPI = `https://7107.api.greenapi.com/waInstance${process.env.ID_INSTANCE}/sendMessage/${process.env.API_TOKEN_INSTANCE}`;
                 
-                // Le respondemos al mismo chat desde donde nos escribieron
                 await axios.post(urlGreenAPI, { chatId: chatId, message: textoRespuesta });
                 console.log("✅ Reporte enviado a WhatsApp exitosamente.");
+            } else {
+                console.log("🙈 El texto no es !reporte o es otro tipo de archivo. Se ignora.");
             }
-        } else {
-            console.log("🙈 El evento no era el comando !reporte, se ignora.");
         }
     } catch (error) {
         console.error("❌ Error leyendo WhatsApp:", error.message);
     }
-    // Siempre respondemos 200 a GreenAPI para que no piense que morimos
+    
     res.status(200).send("Webhook de GreenAPI procesado");
 });
 
