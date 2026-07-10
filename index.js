@@ -1,5 +1,6 @@
 const express = require('express');
 const axios = require('axios');
+const cron = require('node-cron'); // 👈 Importamos el reloj
 const app = express();
 
 app.use(express.json());
@@ -23,48 +24,37 @@ app.post('/webhook/alertas', async (req, res) => {
         let enviarAlerta = false;
 
         if (factura.type == 2) {
-            // Es una cancelación: Restamos de la alcancía
             ventasDelDia -= parseFloat(factura.total_ttc);
             ticketsAtendidos -= 1;
-            
-            mensajeWhatsApp = `🚨 *ALERTA COMANDUP: CANCELACIÓN* 🚨\nSe ha generado una Nota de Crédito.\nTicket ref: ${factura.ref}\nMonto devuelto: $${factura.total_ttc}`;
+            mensajeWhatsApp = `🚨 *ALERTA COMANDUP: CANCELACIÓN* 🚨\nSe generó una Nota de Crédito.\nTicket: ${factura.ref}\nMonto devuelto: $${factura.total_ttc}`;
             enviarAlerta = true;
-        }
-        else {
-            // Es una venta normal: Sumamos a la alcancía
+        } else {
             ventasDelDia += parseFloat(factura.total_ttc);
             ticketsAtendidos += 1;
-
             if (factura.remise_percent && parseFloat(factura.remise_percent) >= 15) {
-                mensajeWhatsApp = `⚠️ *ALERTA COMANDUP: DESCUENTO ALTO* ⚠️\nSe aplicó un descuento del ${factura.remise_percent}% a una cuenta.\nTicket ref: ${factura.ref}\nTotal cobrado: $${factura.total_ttc}`;
+                mensajeWhatsApp = `⚠️ *ALERTA COMANDUP: DESCUENTO ALTO* ⚠️\nSe aplicó un descuento del ${factura.remise_percent}% a una cuenta.\nTicket: ${factura.ref}\nTotal: $${factura.total_ttc}`;
                 enviarAlerta = true;
-            } else {
-                console.log(`✅ Venta normal registrada: $${factura.total_ttc} sumados a la caja.`);
             }
         }
 
         if (enviarAlerta) {
             try {
-                const urlGreenAPI = `https://7107.api.greenapi.com/waInstance${process.env.ID_INSTANCE}/sendMessage/${process.env.API_TOKEN_INSTANCE}`;
-                await axios.post(urlGreenAPI, { chatId: process.env.PHONE_GERENTE, message: mensajeWhatsApp });
-            } catch (error) {
-                console.error("❌ Error al enviar WhatsApp:", error.message);
-            }
+                const url = `https://7107.api.greenapi.com/waInstance${process.env.ID_INSTANCE}/sendMessage/${process.env.API_TOKEN_INSTANCE}`;
+                await axios.post(url, { chatId: process.env.PHONE_GERENTE, message: mensajeWhatsApp });
+            } catch (error) { console.error("❌ Error enviando alerta:", error.message); }
         }
     } 
     else if (datos.triggercode === 'PRODUCT_MODIFY') {
         const producto = datos.object;
         if (producto.status == 0) {
-            const mensajeWhatsApp = `🛑 *ALERTA COMANDUP: PRODUCTO AGOTADO (86)* 🛑\nEl platillo *${producto.label}* ha sido marcado como FUERA DE VENTA.`;
+            const msj = `🛑 *ALERTA COMANDUP: PRODUCTO AGOTADO (86)* 🛑\nEl platillo *${producto.label}* está FUERA DE VENTA.`;
             try {
-                const urlGreenAPI = `https://7107.api.greenapi.com/waInstance${process.env.ID_INSTANCE}/sendMessage/${process.env.API_TOKEN_INSTANCE}`;
-                await axios.post(urlGreenAPI, { chatId: process.env.PHONE_GERENTE, message: mensajeWhatsApp });
-            } catch (error) {
-                console.error("❌ Error al enviar WhatsApp:", error.message);
-            }
+                const url = `https://7107.api.greenapi.com/waInstance${process.env.ID_INSTANCE}/sendMessage/${process.env.API_TOKEN_INSTANCE}`;
+                await axios.post(url, { chatId: process.env.PHONE_GERENTE, message: msj });
+            } catch (error) { console.error("❌ Error enviando 86:", error.message); }
         }
     }
-    res.status(200).send("Webhook de Dolibarr procesado");
+    res.status(200).send("Webhook Dolibarr procesado");
 });
 
 // ==========================================
@@ -73,43 +63,44 @@ app.post('/webhook/alertas', async (req, res) => {
 app.post('/webhook/whatsapp', async (req, res) => {
     try {
         const webhookData = req.body;
-
-        console.log("🔔 GREENAPI TOCÓ LA PUERTA. Tipo de evento:", webhookData.typeWebhook);
-
-        // Solo procesamos si es un mensaje que entra o que sale
         if (webhookData.typeWebhook === 'incomingMessageReceived' || webhookData.typeWebhook === 'outgoingMessageReceived') {
-            
             const messageData = webhookData.messageData || {};
-            let mensajeBruto = "";
-
-            // Buscamos el texto en las dos formas en que GreenAPI lo suele esconder
-            if (messageData.typeMessage === 'textMessage') {
-                mensajeBruto = messageData.textMessageData?.textMessage || "";
-            } else if (messageData.typeMessage === 'extendedTextMessage') {
-                mensajeBruto = messageData.extendedTextMessageData?.text || "";
-            }
-
-            const mensaje = mensajeBruto.trim().toLowerCase();
+            let mensajeBruto = messageData.typeMessage === 'textMessage' ? messageData.textMessageData?.textMessage : (messageData.typeMessage === 'extendedTextMessage' ? messageData.extendedTextMessageData?.text : "");
+            
+            const mensaje = (mensajeBruto || "").trim().toLowerCase();
             const chatId = webhookData.senderData?.chatId;
 
-            console.log(`💬 Texto extraído: "${mensaje}"`);
-
             if (mensaje === '!reporte') {
-                const textoRespuesta = `📊 *CORTE DE CAJA COMANDUP* 📊\n\nHola Gerente, aquí tienes el resumen del turno hasta el momento:\n\n🧾 *Tickets cobrados:* ${ticketsAtendidos}\n💰 *Ventas totales:* $${ventasDelDia.toFixed(2)}\n\n_Tu restaurante está bajo control._`;
-                
-                const urlGreenAPI = `https://7107.api.greenapi.com/waInstance${process.env.ID_INSTANCE}/sendMessage/${process.env.API_TOKEN_INSTANCE}`;
-                
-                await axios.post(urlGreenAPI, { chatId: chatId, message: textoRespuesta });
-                console.log("✅ Reporte enviado a WhatsApp exitosamente.");
-            } else {
-                console.log("🙈 El texto no es !reporte o es otro tipo de archivo. Se ignora.");
+                const msj = `📊 *REPORTE RÁPIDO COMANDUP*\n\n🧾 *Tickets:* ${ticketsAtendidos}\n💰 *Ventas:* $${ventasDelDia.toFixed(2)}`;
+                const url = `https://7107.api.greenapi.com/waInstance${process.env.ID_INSTANCE}/sendMessage/${process.env.API_TOKEN_INSTANCE}`;
+                await axios.post(url, { chatId: chatId, message: msj });
             }
         }
+    } catch (error) { console.error("❌ Error WhatsApp:", error.message); }
+    res.status(200).send("Webhook GreenAPI procesado");
+});
+
+// ==========================================
+// 3. CORTE DE CAJA AUTOMÁTICO (El Reloj)
+// ==========================================
+// MODO PRUEBA: '* * * * *' = El reporte se enviará CADA MINUTO exacto.
+cron.schedule('* * * * *', async () => {
+    console.log("⏰ ¡Reloj activado! Generando cierre de caja automático...");
+    const textoCierre = `🌙 *CIERRE DE TURNO COMANDUP* 🌙\n\nEl turno ha finalizado de manera automática. Resumen de hoy:\n\n🧾 *Total de tickets:* ${ticketsAtendidos}\n💰 *Ingresos totales:* $${ventasDelDia.toFixed(2)}\n\n_La caja virtual ha sido reiniciada para mañana. ¡Buen descanso!_`;
+
+    try {
+        const urlGreenAPI = `https://7107.api.greenapi.com/waInstance${process.env.ID_INSTANCE}/sendMessage/${process.env.API_TOKEN_INSTANCE}`;
+        // Mandamos el mensaje al gerente usando la variable de entorno
+        await axios.post(urlGreenAPI, { chatId: process.env.PHONE_GERENTE, message: textoCierre });
+        console.log("✅ Corte de caja automático enviado a WhatsApp.");
+
+        // ¡Vaciamos la alcancía para el día siguiente!
+        ventasDelDia = 0;
+        ticketsAtendidos = 0;
+
     } catch (error) {
-        console.error("❌ Error leyendo WhatsApp:", error.message);
+        console.error("❌ Error al enviar el corte automático:", error.message);
     }
-    
-    res.status(200).send("Webhook de GreenAPI procesado");
 });
 
 const PORT = process.env.PORT || 8080;
