@@ -74,24 +74,36 @@ app.post('/webhook/whatsapp', async (req, res) => {
     try {
         const webhookData = req.body;
 
-        // Verificamos si es un mensaje de texto entrante
-        if (webhookData.typeWebhook === 'incomingMessageReceived' && webhookData.messageData?.typeMessage === 'textMessage') {
-            const mensaje = webhookData.messageData.textMessageData.textMessage.trim().toLowerCase();
-            const sender = webhookData.senderData.sender; // El número de quien nos escribe
+        // 🔍 LUPA MÁXIMA: Imprimimos TODO lo que GreenAPI nos manda
+        console.log("🔔 GREENAPI TOCÓ LA PUERTA. Tipo de evento:", webhookData.typeWebhook);
 
-            console.log(`💬 Mensaje recibido de ${sender}: ${mensaje}`);
+        // Aceptamos mensajes entrantes y también salientes (por si te escribes a ti mismo)
+        if (
+            (webhookData.typeWebhook === 'incomingMessageReceived' || webhookData.typeWebhook === 'outgoingMessageReceived') && 
+            webhookData.messageData?.typeMessage === 'textMessage'
+        ) {
+            const mensaje = webhookData.messageData.textMessageData.textMessage.trim().toLowerCase();
+            // Tomamos el ID del chat donde ocurrió la conversación
+            const chatId = webhookData.senderData.chatId; 
+
+            console.log(`💬 Mensaje de texto leído en el chat: "${mensaje}"`);
 
             if (mensaje === '!reporte') {
                 const textoRespuesta = `📊 *CORTE DE CAJA COMANDUP* 📊\n\nHola Gerente, aquí tienes el resumen del turno hasta el momento:\n\n🧾 *Tickets cobrados:* ${ticketsAtendidos}\n💰 *Ventas totales:* $${ventasDelDia.toFixed(2)}\n\n_Tu restaurante está bajo control._`;
                 
                 const urlGreenAPI = `https://7107.api.greenapi.com/waInstance${process.env.ID_INSTANCE}/sendMessage/${process.env.API_TOKEN_INSTANCE}`;
-                await axios.post(urlGreenAPI, { chatId: sender, message: textoRespuesta });
-                console.log("✅ Reporte enviado a WhatsApp");
+                
+                // Le respondemos al mismo chat desde donde nos escribieron
+                await axios.post(urlGreenAPI, { chatId: chatId, message: textoRespuesta });
+                console.log("✅ Reporte enviado a WhatsApp exitosamente.");
             }
+        } else {
+            console.log("🙈 El evento no era el comando !reporte, se ignora.");
         }
     } catch (error) {
         console.error("❌ Error leyendo WhatsApp:", error.message);
     }
+    // Siempre respondemos 200 a GreenAPI para que no piense que morimos
     res.status(200).send("Webhook de GreenAPI procesado");
 });
 
