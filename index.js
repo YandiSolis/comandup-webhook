@@ -15,16 +15,17 @@ app.post('/webhook/alertas', async (req, res) => {
     const datos = req.body;
     console.log("📥 ¡Evento detectado por ComandUp! Código:", datos.triggercode);
 
+    // ==========================================
+    // 1. REGLAS PARA FACTURAS Y COBROS
+    // ==========================================
     if (datos.triggercode === 'BILL_VALIDATE') {
         const factura = datos.object;
         let mensajeWhatsApp = '';
         let enviarAlerta = false;
 
-        // 🔍 LUPA DE DEBUGGING: Vamos a espiar exactamente qué nos manda Dolibarr
         console.log("🔍 TIPO DE DOC RECIBIDO:", factura.type);
         console.log("🔍 DESCUENTO RECIBIDO:", factura.remise_percent);
 
-        // Usamos == (doble igual) para que acepte tanto el número 2 como el texto '2'
         if (factura.type == 2) {
             mensajeWhatsApp = `🚨 *ALERTA COMANDUP: CANCELACIÓN* 🚨\nSe ha generado una Nota de Crédito en el sistema.\nTicket ref: ${factura.ref}\nMonto devuelto: $${factura.total_ttc}`;
             enviarAlerta = true;
@@ -37,20 +38,36 @@ app.post('/webhook/alertas', async (req, res) => {
         if (enviarAlerta) {
             try {
                 const urlGreenAPI = `https://7107.api.greenapi.com/waInstance${process.env.ID_INSTANCE}/sendMessage/${process.env.API_TOKEN_INSTANCE}`;
-                
-                const payload = {
-                    chatId: process.env.PHONE_GERENTE,
-                    message: mensajeWhatsApp
-                };
-
-                await axios.post(urlGreenAPI, payload);
-                console.log("✅ Alerta de seguridad enviada al WhatsApp del gerente.");
-
+                await axios.post(urlGreenAPI, { chatId: process.env.PHONE_GERENTE, message: mensajeWhatsApp });
+                console.log("✅ Alerta de caja enviada.");
             } catch (error) {
                 console.error("❌ Error al enviar WhatsApp:", error.message);
             }
         } else {
             console.log("✅ Venta normal registrada. No requiere alerta.");
+        }
+    } 
+    // ==========================================
+    // 2. REGLAS PARA INVENTARIO ("86")
+    // ==========================================
+    else if (datos.triggercode === 'PRODUCT_MODIFY') {
+        const producto = datos.object;
+        
+        // En Dolibarr, el status '0' significa que ya no está a la venta
+        console.log(`🔍 Revisando producto: ${producto.label} | Estado venta: ${producto.status}`);
+
+        if (producto.status == 0) {
+            const mensajeWhatsApp = `🛑 *ALERTA COMANDUP: PRODUCTO AGOTADO (86)* 🛑\nEl platillo *${producto.label}* ha sido marcado como FUERA DE VENTA.\nPor favor, informe a las mesas y no ofrezca este producto.`;
+            
+            try {
+                const urlGreenAPI = `https://7107.api.greenapi.com/waInstance${process.env.ID_INSTANCE}/sendMessage/${process.env.API_TOKEN_INSTANCE}`;
+                await axios.post(urlGreenAPI, { chatId: process.env.PHONE_GERENTE, message: mensajeWhatsApp });
+                console.log("✅ Alerta 86 enviada exitosamente.");
+            } catch (error) {
+                console.error("❌ Error al enviar WhatsApp:", error.message);
+            }
+        } else {
+            console.log("✅ Modificación de producto normal (Sigue en venta).");
         }
     }
 
