@@ -84,7 +84,7 @@ app.post('/webhook/whatsapp', async (req, res) => {
 // 3. CORTE DE CAJA AUTOMÁTICO (El Reloj)
 // ==========================================
 // MODO PRUEBA: '* * * * *' = El reporte se enviará CADA MINUTO exacto.
-cron.schedule('* * * * *', async () => {
+cron.schedule('0 22 * * *', async () => {
     console.log("⏰ ¡Reloj activado! Generando cierre de caja automático...");
     const textoCierre = `🌙 *CIERRE DE TURNO COMANDUP* 🌙\n\nEl turno ha finalizado de manera automática. Resumen de hoy:\n\n🧾 *Total de tickets:* ${ticketsAtendidos}\n💰 *Ingresos totales:* $${ventasDelDia.toFixed(2)}\n\n_La caja virtual ha sido reiniciada para mañana. ¡Buen descanso!_`;
 
