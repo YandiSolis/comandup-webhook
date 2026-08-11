@@ -1,11 +1,14 @@
 /* styles.css */
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;800&display=swap');
+/* Importamos FontAwesome para los logos de redes sociales */
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css');
 
 :root {
-    --primary: #006837; /* Tu verde esmeralda */
-    --dark: #333333;
-    --light: #f4f4f4;
+    --primary: #006837; /* Verde esmeralda */
+    --dark: #1a1a1a;
+    --light: #f8f9fa;
     --white: #ffffff;
+    --gray: #6c757d;
 }
 
 * {
@@ -18,107 +21,180 @@
 body {
     background-color: var(--light);
     color: var(--dark);
-    line-height: 1.6;
+    line-height: 1.7;
 }
 
 /* Navbar */
 header {
     background: var(--white);
-    padding: 15px 50px;
+    padding: 15px 8%;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    position: sticky;
+    top: 0;
+    z-index: 100;
 }
 
 header img {
-    height: 50px;
+    height: 45px;
 }
 
 header h1 {
     color: var(--primary);
-    font-size: 24px;
+    font-size: 26px;
+    font-weight: 800;
+    letter-spacing: -1px;
+}
+
+/* Botones */
+.btn {
+    background: var(--dark);
+    color: var(--white);
+    padding: 12px 28px;
+    text-decoration: none;
+    font-weight: 600;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    display: inline-block;
+}
+
+.btn-primary {
+    background: var(--primary);
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    opacity: 0.9;
 }
 
 /* Hero Section */
 .hero {
-    background: var(--primary);
+    background: linear-gradient(135deg, #004d28 0%, var(--primary) 100%);
     color: var(--white);
     text-align: center;
-    padding: 100px 20px;
+    padding: 120px 20px;
 }
 
 .hero h2 {
-    font-size: 40px;
-    margin-bottom: 20px;
+    font-size: 48px;
+    font-weight: 800;
+    margin-bottom: 24px;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.2;
 }
 
 .hero p {
-    font-size: 18px;
-    margin-bottom: 30px;
-}
-
-.btn {
-    background: var(--dark);
-    color: var(--white);
-    padding: 15px 30px;
-    text-decoration: none;
-    font-weight: 600;
-    border-radius: 5px;
-    transition: 0.3s;
-    border: none;
-    cursor: pointer;
-}
-
-.btn:hover {
-    background: #222;
-    transform: translateY(-2px);
+    font-size: 20px;
+    font-weight: 300;
+    margin-bottom: 40px;
+    color: #e0e0e0;
 }
 
 /* Features */
 .features {
     display: flex;
-    justify-content: space-around;
-    padding: 50px;
+    justify-content: center;
+    gap: 30px;
+    padding: 80px 8%;
     background: var(--white);
     flex-wrap: wrap;
 }
 
 .feature-box {
-    width: 30%;
-    text-align: center;
-    padding: 20px;
+    flex: 1;
+    min-width: 300px;
+    padding: 40px 30px;
+    background: var(--light);
+    border-radius: 12px;
+    transition: transform 0.3s ease;
+    border: 1px solid #eee;
+}
+
+.feature-box:hover {
+    transform: translateY(-5px);
+    background: #fff;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+}
+
+.feature-box i {
+    font-size: 40px;
+    color: var(--primary);
+    margin-bottom: 20px;
 }
 
 .feature-box h3 {
-    color: var(--primary);
+    font-size: 22px;
+    margin-bottom: 15px;
+    color: var(--dark);
+}
+
+.feature-box p {
+    color: var(--gray);
+    font-size: 15px;
+}
+
+/* Sección Formulario */
+.contact-section {
+    padding: 80px 20px;
+    background: var(--light);
+    text-align: center;
+}
+
+.form-container {
+    max-width: 700px;
+    margin: 0 auto;
+    background: var(--white);
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+}
+
+.form-container h3 {
+    font-size: 28px;
+    color: var(--dark);
     margin-bottom: 10px;
 }
 
-/* Container general */
-.container {
-    max-width: 800px;
-    margin: 40px auto;
-    padding: 20px;
-    background: var(--white);
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+.form-container p {
+    color: var(--gray);
+    margin-bottom: 30px;
 }
 
-/* Formulario Checkout */
-.form-group {
-    margin-bottom: 15px;
+/* Footer y Redes Sociales */
+footer {
+    background: var(--dark);
+    color: var(--white);
+    padding: 60px 8% 30px;
+    text-align: center;
 }
 
-.form-group label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: 600;
+.social-icons {
+    margin-bottom: 30px;
 }
 
-.form-group input {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+.social-icons a {
+    color: var(--white);
+    font-size: 28px;
+    margin: 0 15px;
+    transition: color 0.3s ease;
+    text-decoration: none;
+}
+
+.social-icons a:hover {
+    color: var(--primary);
+}
+
+footer p {
+    color: #888;
+    font-size: 14px;
+    border-top: 1px solid #333;
+    padding-top: 20px;
+    margin-top: 20px;
 }

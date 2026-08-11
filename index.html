@@ -3,47 +3,84 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ComandUp - Control Total</title>
+    <title>ComandUp | Software Restaurantero</title>
     <link rel="stylesheet" href="styles.css">
+    <!-- Librería para usar los logos de Redes Sociales y otros íconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
+    <!-- Navegación -->
     <header>
-        <div style="display: flex; align-items: center; gap: 15px;">
+        <div style="display: flex; align-items: center; gap: 12px;">
             <img src="Designer.png" alt="ComandUp Logo">
             <h1>ComandUp</h1>
         </div>
-        <a href="checkout.html" class="btn" style="background: var(--primary); color: white;">Contratar Plan Pro</a>
+        <a href="checkout.html" class="btn btn-primary">Adquirir Licencia</a>
     </header>
 
+    <!-- Sección Principal (Hero) -->
     <section class="hero">
-        <h2>El control de tu restaurante, directo en tu WhatsApp.</h2>
-        <p>Automatiza alertas de seguridad, controla el inventario en tiempo real y recibe tus cortes de caja al instante.</p>
-        <a href="#contacto" class="btn">Solicitar Demo Gratuita</a>
+        <h2>Inteligencia operativa y financiera para el sector restaurantero.</h2>
+        <p>Prevención de mermas, control de inventario en tiempo real y métricas financieras al instante mediante integración nativa.</p>
+        <a href="#contacto" class="btn">Agendar Demostración</a>
     </section>
 
+    <!-- Beneficios (Características) -->
     <section class="features">
         <div class="feature-box">
-            <h3>Seguridad Antifraude</h3>
-            <p>Recibe alertas instantáneas en tu celular si ocurre una cancelación o se emite una nota de crédito en caja.</p>
+            <i class="fa-solid fa-shield-halved"></i>
+            <h3>Prevención de Fraudes</h3>
+            <p>Auditoría silenciosa. Nuestro sistema detecta notas de crédito irregulares en el TakePOS y notifica a gerencia de manera inmediata, bloqueando fugas de capital.</p>
         </div>
         <div class="feature-box">
-            <h3>Control Alerta 86</h3>
-            <p>Da de baja un platillo agotado en el ERP y notifica a todo tu equipo de meseros en milisegundos.</p>
+            <i class="fa-solid fa-bell-concierge"></i>
+            <h3>Sincronización 86</h3>
+            <p>Gestión de stock en la nube. Al marcar un insumo como agotado en el ERP, el piso de servicio entero es notificado en milisegundos para detener la oferta del platillo.</p>
         </div>
         <div class="feature-box">
-            <h3>Reportes a Demanda</h3>
-            <p>Escribe el comando !reporte a nuestro bot y conoce tus ventas en tiempo real sin estar en la sucursal.</p>
+            <i class="fa-solid fa-chart-line"></i>
+            <h3>Métricas bajo Demanda</h3>
+            <p>Toma de decisiones ágil. Accede a los cortes de caja y volumen de tickets procesados solicitando el reporte remoto directamente desde tu dispositivo móvil.</p>
         </div>
     </section>
 
-    <section class="container" id="contacto" style="text-align: center;">
-        <h3 style="color: var(--primary); margin-bottom: 20px;">Déjanos tus datos y nos pondremos en contacto</h3>
-        
-        <!-- Pega el enlace HTML (iframe) de tu formulario de Google aquí -->
-        <p style="color: gray;">[Aquí puedes insertar el iframe de tu Google Form para la interacción del cliente]</p>
-        
+    <!-- Sección del Formulario de Google -->
+    <section class="contact-section" id="contacto">
+        <div class="form-container">
+            <h3>Moderniza tu operación hoy</h3>
+            <p>Completa el formulario y un asesor se pondrá en contacto contigo para una demostración en vivo.</p>
+            
+            <!-- INICIO DEL FORMULARIO DE GOOGLE -->
+            <!-- Solo reemplaza TU_ENLACE_AQUI por el link de "Insertar" de tu Google Form -->
+            <iframe 
+                src="https://docs.google.com/forms/d/e/1FAIpQLSfCAF5xPQGyAY780W9ihB3lzCVEyzof39-oBkbFS0g1l_u7hA/viewform?usp=dialog" 
+                width="100%" 
+                height="650" 
+                frameborder="0" 
+                marginheight="0" 
+                marginwidth="0">
+                Cargando formulario...
+            </iframe>
+            <!-- FIN DEL FORMULARIO DE GOOGLE -->
+            
+        </div>
     </section>
+
+    <!-- Pie de Página (Footer con Redes Sociales) -->
+    <footer>
+        <div class="social-icons">
+            <!-- Reemplaza el "#" con el link real de tu página de Facebook -->
+            <a href="https://web.facebook.com/profile.php?id=61593327594252&sk=about" target="_blank" title="Síguenos en Facebook">
+                <i class="fa-brands fa-facebook"></i>
+            </a>
+            <!-- Reemplaza el "#" con el link real de tu Instagram -->
+            <a href="https://www.instagram.com/comanduprest/" target="_blank" title="Síguenos en Instagram">
+                <i class="fa-brands fa-instagram"></i>
+            </a>
+        </div>
+        <p>&copy; 2026 ComandUp. Todos los derechos reservados.</p>
+    </footer>
 
 </body>
 </html>
