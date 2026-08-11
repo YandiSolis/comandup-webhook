@@ -108,18 +108,25 @@
             </div>
             
             <div class="native-form animate-up">
-                <form id="leadForm">
+                <!-- Formulario Conectado a Gmail -->
+                <form action="https://formsubmit.co/comanduprest@gmail.com" method="POST">
+                    
+                    <!-- Configuraciones ocultas de FormSubmit -->
+                    <input type="hidden" name="_next" value="https://yandisolis.github.io/comandup-webhook/">
+                    <input type="hidden" name="_captcha" value="false">
+                    <input type="hidden" name="_subject" value="¡Nuevo prospecto de ComandUp!">
+
                     <div class="form-group">
-                        <input type="text" placeholder="Nombre completo" required>
+                        <input type="text" name="Nombre" placeholder="Nombre completo" required>
                     </div>
                     <div class="form-group">
-                        <input type="text" placeholder="Nombre de tu Restaurante" required>
+                        <input type="text" name="Restaurante" placeholder="Nombre de tu Restaurante" required>
                     </div>
                     <div class="form-group">
-                        <input type="email" placeholder="Correo electrónico corporativo" required>
+                        <input type="email" name="Correo" placeholder="Correo electrónico corporativo" required>
                     </div>
                     <div class="form-group">
-                        <textarea rows="3" placeholder="¿Cómo podemos ayudarte? (Opcional)"></textarea>
+                        <textarea name="Mensaje" rows="3" placeholder="¿Cómo podemos ayudarte? (Opcional)"></textarea>
                     </div>
                     <button type="submit" class="btn btn-primary" style="width: 100%; padding: 15px; font-size: 16px;">
                         Solicitar Contacto
