@@ -155,3 +155,132 @@ header h1 { color: var(--primary); font-size: 26px; font-weight: 800; letter-spa
 .faq-item { border-bottom: 1px solid #eee; padding: 20px 0; }
 .faq-item h4 { color: var(--dark); font-size: 18px; margin-bottom: 10px; }
 .faq-item p { color: var(--gray); }
+
+/* --- SECCIÓN DE CONTACTO PREMIUM --- */
+.contact-section {
+    padding: 80px 5%;
+    background: var(--dark); /* Fondo oscuro elegante */
+    color: var(--white);
+}
+
+.contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    max-width: 1100px;
+    margin: 0 auto;
+    align-items: center;
+}
+
+.contact-info h3 {
+    font-size: 36px;
+    margin-bottom: 20px;
+    color: var(--white);
+    line-height: 1.2;
+}
+
+.contact-info p {
+    color: #cccccc;
+    margin-bottom: 25px;
+    font-size: 16px;
+}
+
+.contact-info ul {
+    list-style: none;
+    margin-bottom: 30px;
+}
+
+.contact-info ul li {
+    margin-bottom: 15px;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.contact-info ul li i {
+    color: var(--primary);
+    font-size: 20px;
+}
+
+/* Tarjeta del Formulario */
+.native-form {
+    background: var(--white);
+    padding: 40px;
+    border-radius: 16px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    color: var(--dark);
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group input, 
+.form-group textarea {
+    width: 100%;
+    padding: 15px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 15px;
+    background: #fcfcfc;
+    transition: all 0.3s;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.form-group input:focus, 
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px rgba(0, 104, 55, 0.1);
+    background: var(--white);
+}
+
+/* --- FOOTER Y REDES SOCIALES --- */
+footer {
+    background: #111111;
+    color: var(--white);
+    padding: 60px 20px 30px;
+    text-align: center;
+    border-top: 1px solid #222;
+}
+
+.social-icons {
+    margin-bottom: 25px;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.social-icons a {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 50px;
+    height: 50px;
+    background: #222222;
+    color: var(--white);
+    border-radius: 50%;
+    font-size: 22px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.social-icons a:hover {
+    background: var(--primary); /* Se ilumina en verde */
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 104, 55, 0.4);
+}
+
+footer p {
+    color: #777777;
+    font-size: 14px;
+    margin-top: 20px;
+}
+
+/* Responsividad para celulares */
+@media (max-width: 768px) {
+    .contact-grid {
+        grid-template-columns: 1fr;
+    }
+}
