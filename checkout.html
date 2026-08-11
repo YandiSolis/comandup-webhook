@@ -3,56 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Checkout - ComandUp</title>
+    <title>Suscripción Pro | ComandUp</title>
     <link rel="stylesheet" href="styles.css">
 </head>
-<body>
+<body style="background: var(--light); display: flex; flex-direction: column; min-height: 100vh;">
 
+    <!-- Navegación -->
     <header>
-        <div style="display: flex; align-items: center; gap: 15px;">
+        <div style="display: flex; align-items: center; gap: 12px;">
             <img src="Designer.png" alt="ComandUp Logo">
             <h1>ComandUp</h1>
         </div>
-        <a href="index.html" class="btn" style="background: var(--dark);">Volver al Inicio</a>
+        <a href="index.html" class="btn">Volver al Inicio</a>
     </header>
 
-    <div class="container">
-        <h2 style="color: var(--primary); text-align: center; margin-bottom: 20px;">Completar Suscripción</h2>
-        <p style="text-align: center; margin-bottom: 30px; font-weight: bold;">Plan Pro: $999.00 MXN / mes</p>
-        
-        <form id="paymentForm">
-            <p style="color: red; font-size: 12px; margin-bottom: 10px;">* Modo Prueba: No ingreses datos bancarios reales.</p>
+    <!-- Formulario de Pago Simulado -->
+    <section style="flex: 1; display: flex; justify-content: center; align-items: center; padding: 40px 20px;">
+        <div class="form-container" style="width: 100%; max-width: 500px; text-align: left;">
+            <h3 style="text-align: center; margin-bottom: 5px;">Completar Suscripción</h3>
+            <p style="text-align: center; color: var(--primary); font-weight: 600; margin-bottom: 20px;">Plan Pro: $999.00 MXN / mes</p>
             
-            <div class="form-group">
-                <label>Nombre en la tarjeta</label>
-                <input type="text" placeholder="Ej. Yandi Melina" required>
-            </div>
-            
-            <div class="form-group">
-                <label>Número de Tarjeta</label>
-                <input type="text" placeholder="0000 0000 0000 0000" maxlength="16" required>
-            </div>
-            
-            <div style="display: flex; gap: 15px;">
-                <div class="form-group" style="flex: 1;">
-                    <label>Fecha de Expiración</label>
-                    <input type="text" placeholder="MM/AA" maxlength="5" required>
+            <form id="paymentForm">
+                <p style="color: #dc3545; font-size: 13px; margin-bottom: 15px; text-align: center;">* Entorno de prueba: Usa datos ficticios.</p>
+                
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; font-weight: 600; margin-bottom: 5px;">Titular de la cuenta</label>
+                    <input type="text" placeholder="Ej. Yandi Melina" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px;">
                 </div>
-                <div class="form-group" style="flex: 1;">
-                    <label>CVV</label>
-                    <input type="text" placeholder="123" maxlength="3" required>
+                
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; font-weight: 600; margin-bottom: 5px;">Número de Tarjeta</label>
+                    <input type="text" placeholder="0000 0000 0000 0000" maxlength="16" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px;">
                 </div>
-            </div>
-            
-            <button type="submit" class="btn" style="width: 100%; margin-top: 15px; background: var(--primary);">Pagar Suscripción</button>
-        </form>
-    </div>
+                
+                <div style="display: flex; gap: 15px; margin-bottom: 25px;">
+                    <div style="flex: 1;">
+                        <label style="display: block; font-weight: 600; margin-bottom: 5px;">Vencimiento</label>
+                        <input type="text" placeholder="MM/AA" maxlength="5" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px;">
+                    </div>
+                    <div style="flex: 1;">
+                        <label style="display: block; font-weight: 600; margin-bottom: 5px;">CVV</label>
+                        <input type="password" placeholder="123" maxlength="3" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px;">
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn btn-primary" style="width: 100%; font-size: 16px;">Procesar Pago Seguro</button>
+            </form>
+        </div>
+    </section>
 
+    <!-- Pie de Página -->
+    <footer style="padding: 20px; text-align: center; background: var(--dark); color: #888;">
+        <p style="border: none; margin: 0; padding: 0;">&copy; 2026 ComandUp. Todos los derechos reservados.</p>
+    </footer>
+
+    <!-- Lógica de Simulación -->
     <script>
         document.getElementById('paymentForm').addEventListener('submit', function(e) {
-            e.preventDefault(); // Evita que la página recargue
-            alert("¡Pago simulado exitoso! Tu restaurante ahora está protegido con ComandUp.");
-            window.location.href = "index.html"; // Redirige al inicio
+            e.preventDefault(); 
+            alert("¡Transacción aprobada! Tu restaurante ahora opera con ComandUp.");
+            window.location.href = "index.html"; 
         });
     </script>
 </body>
