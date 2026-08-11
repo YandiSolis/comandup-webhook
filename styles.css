@@ -1,10 +1,9 @@
 /* styles.css */
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;800&display=swap');
-/* Importamos FontAwesome para los logos de redes sociales */
 @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css');
 
 :root {
-    --primary: #006837; /* Verde esmeralda */
+    --primary: #006837; 
     --dark: #1a1a1a;
     --light: #f8f9fa;
     --white: #ffffff;
@@ -22,6 +21,21 @@ body {
     background-color: var(--light);
     color: var(--dark);
     line-height: 1.7;
+}
+
+/* Barra de Contacto Superior */
+.top-bar {
+    background: var(--dark);
+    color: var(--light);
+    font-size: 13px;
+    padding: 8px 8%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.top-bar i {
+    color: var(--primary);
+    margin-right: 5px;
 }
 
 /* Navbar */
@@ -46,6 +60,22 @@ header h1 {
     font-size: 26px;
     font-weight: 800;
     letter-spacing: -1px;
+}
+
+.nav-links {
+    display: flex;
+    gap: 20px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: var(--dark);
+    font-weight: 600;
+    transition: color 0.3s;
+}
+
+.nav-links a:hover {
+    color: var(--primary);
 }
 
 /* Botones */
@@ -77,7 +107,7 @@ header h1 {
     background: linear-gradient(135deg, #004d28 0%, var(--primary) 100%);
     color: var(--white);
     text-align: center;
-    padding: 120px 20px;
+    padding: 100px 20px;
 }
 
 .hero h2 {
@@ -85,8 +115,7 @@ header h1 {
     font-weight: 800;
     margin-bottom: 24px;
     max-width: 800px;
-    margin-left: auto;
-    margin-right: auto;
+    margin: 0 auto 24px;
     line-height: 1.2;
 }
 
@@ -97,42 +126,44 @@ header h1 {
     color: #e0e0e0;
 }
 
-/* Features */
+/* Features Grid (Más tupido) */
+.section-title {
+    text-align: center;
+    padding: 60px 20px 20px;
+    font-size: 32px;
+    color: var(--dark);
+}
+
 .features {
-    display: flex;
-    justify-content: center;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 30px;
-    padding: 80px 8%;
-    background: var(--white);
-    flex-wrap: wrap;
+    padding: 20px 8% 80px;
 }
 
 .feature-box {
-    flex: 1;
-    min-width: 300px;
     padding: 40px 30px;
-    background: var(--light);
+    background: var(--white);
     border-radius: 12px;
     transition: transform 0.3s ease;
     border: 1px solid #eee;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.02);
 }
 
 .feature-box:hover {
     transform: translateY(-5px);
-    background: #fff;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    border-color: var(--primary);
 }
 
 .feature-box i {
-    font-size: 40px;
+    font-size: 35px;
     color: var(--primary);
     margin-bottom: 20px;
 }
 
 .feature-box h3 {
-    font-size: 22px;
-    margin-bottom: 15px;
-    color: var(--dark);
+    font-size: 20px;
+    margin-bottom: 12px;
 }
 
 .feature-box p {
@@ -140,50 +171,63 @@ header h1 {
     font-size: 15px;
 }
 
-/* Sección Formulario */
+/* Formulario Nativo */
 .contact-section {
     padding: 80px 20px;
-    background: var(--light);
-    text-align: center;
+    background: var(--dark);
+    color: var(--white);
 }
 
-.form-container {
-    max-width: 700px;
+.contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 50px;
+    max-width: 1000px;
     margin: 0 auto;
+}
+
+.contact-info h3 {
+    font-size: 32px;
+    margin-bottom: 20px;
+    color: var(--primary);
+}
+
+.contact-info p {
+    color: #bbb;
+    margin-bottom: 30px;
+}
+
+.native-form {
     background: var(--white);
     padding: 40px;
     border-radius: 12px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-}
-
-.form-container h3 {
-    font-size: 28px;
     color: var(--dark);
-    margin-bottom: 10px;
 }
 
-.form-container p {
-    color: var(--gray);
-    margin-bottom: 30px;
+.form-group {
+    margin-bottom: 20px;
 }
 
-/* Footer y Redes Sociales */
+.form-group input, .form-group textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 15px;
+}
+
+/* Footer */
 footer {
-    background: var(--dark);
+    background: #111;
     color: var(--white);
-    padding: 60px 8% 30px;
+    padding: 40px 8% 20px;
     text-align: center;
-}
-
-.social-icons {
-    margin-bottom: 30px;
 }
 
 .social-icons a {
     color: var(--white);
-    font-size: 28px;
-    margin: 0 15px;
-    transition: color 0.3s ease;
+    font-size: 24px;
+    margin: 0 10px;
     text-decoration: none;
 }
 
@@ -192,9 +236,7 @@ footer {
 }
 
 footer p {
-    color: #888;
+    color: #666;
     font-size: 14px;
-    border-top: 1px solid #333;
-    padding-top: 20px;
     margin-top: 20px;
 }

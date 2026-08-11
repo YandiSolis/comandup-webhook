@@ -3,12 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ComandUp | Software Restaurantero</title>
+    <title>ComandUp | Software para Restaurantes</title>
     <link rel="stylesheet" href="styles.css">
-    <!-- Librería para usar los logos de Redes Sociales y otros íconos -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
+
+    <!-- Barra Superior de Contacto -->
+    <div class="top-bar">
+        <div>
+            <span style="margin-right: 15px;"><i class="fa-solid fa-envelope"></i> ventas@comandup.com</span>
+            <span><i class="fa-solid fa-phone"></i> +52 (834) 000-0000</span>
+        </div>
+        <div>
+            <span><i class="fa-solid fa-location-dot"></i> Ciudad Victoria, Tamaulipas</span>
+        </div>
+    </div>
 
     <!-- Navegación -->
     <header>
@@ -16,71 +26,102 @@
             <img src="Designer.png" alt="ComandUp Logo">
             <h1>ComandUp</h1>
         </div>
-        <a href="checkout.html" class="btn btn-primary">Adquirir Licencia</a>
+        <div class="nav-links">
+            <a href="#funciones">Funciones</a>
+            <a href="#contacto">Contacto</a>
+            <a href="checkout.html" class="btn btn-primary">Adquirir Licencia</a>
+        </div>
     </header>
 
-    <!-- Sección Principal (Hero) -->
+    <!-- Hero Section -->
     <section class="hero">
-        <h2>Inteligencia operativa y financiera para el sector restaurantero.</h2>
-        <p>Prevención de mermas, control de inventario en tiempo real y métricas financieras al instante mediante integración nativa.</p>
+        <h2>Inteligencia operativa para el sector restaurantero.</h2>
+        <p>Prevención de mermas, control de inventario y métricas financieras al instante mediante integración directa con WhatsApp y Dolibarr ERP.</p>
         <a href="#contacto" class="btn">Agendar Demostración</a>
     </section>
 
-    <!-- Beneficios (Características) -->
+    <!-- Funciones Ampliadas (6 Cajas) -->
+    <h2 class="section-title" id="funciones">¿Qué incluye ComandUp?</h2>
     <section class="features">
         <div class="feature-box">
             <i class="fa-solid fa-shield-halved"></i>
             <h3>Prevención de Fraudes</h3>
-            <p>Auditoría silenciosa. Nuestro sistema detecta notas de crédito irregulares en el TakePOS y notifica a gerencia de manera inmediata, bloqueando fugas de capital.</p>
+            <p>Auditoría silenciosa. Detecta notas de crédito y cancelaciones en caja, enviando alertas inmediatas a gerencia.</p>
         </div>
         <div class="feature-box">
             <i class="fa-solid fa-bell-concierge"></i>
             <h3>Sincronización 86</h3>
-            <p>Gestión de stock en la nube. Al marcar un insumo como agotado en el ERP, el piso de servicio entero es notificado en milisegundos para detener la oferta del platillo.</p>
+            <p>Da de baja platillos agotados en el ERP y notifica al piso de servicio en milisegundos para evitar malos entendidos.</p>
         </div>
         <div class="feature-box">
             <i class="fa-solid fa-chart-line"></i>
             <h3>Métricas bajo Demanda</h3>
-            <p>Toma de decisiones ágil. Accede a los cortes de caja y volumen de tickets procesados solicitando el reporte remoto directamente desde tu dispositivo móvil.</p>
+            <p>Escribe el comando !reporte en WhatsApp y recibe el corte de caja y volumen de tickets desde cualquier lugar.</p>
+        </div>
+        <div class="feature-box">
+            <i class="fa-solid fa-users-gear"></i>
+            <h3>Control Multi-Perfil</h3>
+            <p>Accesos jerárquicos. Diferencia entre permisos de cajero, mesero y administrador para blindar tu operación.</p>
+        </div>
+        <div class="feature-box">
+            <i class="fa-solid fa-cloud"></i>
+            <h3>Respaldo en la Nube</h3>
+            <p>Toda tu información de ventas e inventario se guarda automáticamente. Si falla la luz, tus datos están a salvo.</p>
+        </div>
+        <div class="feature-box">
+            <i class="fa-solid fa-plug-circle-bolt"></i>
+            <h3>Integración TakePOS</h3>
+            <p>Conectamos directamente con el punto de venta más ágil del mercado, sin necesidad de instalaciones complejas.</p>
         </div>
     </section>
 
-    <!-- Sección del Formulario de Google -->
+    <!-- Formulario Integrado (Reemplaza a Google Forms para mantener el diseño premium) -->
     <section class="contact-section" id="contacto">
-        <div class="form-container">
-            <h3>Moderniza tu operación hoy</h3>
-            <p>Completa el formulario y un asesor se pondrá en contacto contigo para una demostración en vivo.</p>
+        <div class="contact-grid">
+            <div class="contact-info">
+                <h3>Transforma tu operación hoy mismo</h3>
+                <p>Déjanos tus datos y un especialista se pondrá en contacto contigo para realizar una demostración técnica en vivo de cómo ComandUp puede integrarse a tu sucursal.</p>
+                <p><i class="fa-solid fa-check" style="color: var(--primary);"></i> Instalación rápida</p>
+                <p><i class="fa-solid fa-check" style="color: var(--primary);"></i> Capacitación incluida</p>
+                <p><i class="fa-solid fa-check" style="color: var(--primary);"></i> Soporte técnico especializado</p>
+            </div>
             
-            <!-- INICIO DEL FORMULARIO DE GOOGLE -->
-            <!-- Solo reemplaza TU_ENLACE_AQUI por el link de "Insertar" de tu Google Form -->
-            <iframe 
-                src="https://docs.google.com/forms/d/e/1FAIpQLSfCAF5xPQGyAY780W9ihB3lzCVEyzof39-oBkbFS0g1l_u7hA/viewform?usp=dialog" 
-                width="100%" 
-                height="650" 
-                frameborder="0" 
-                marginheight="0" 
-                marginwidth="0">
-                Cargando formulario...
-            </iframe>
-            <!-- FIN DEL FORMULARIO DE GOOGLE -->
-            
+            <div class="native-form">
+                <form id="leadForm">
+                    <div class="form-group">
+                        <input type="text" placeholder="Nombre completo" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" placeholder="Nombre de tu Restaurante" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" placeholder="Correo electrónico corporativo" required>
+                    </div>
+                    <div class="form-group">
+                        <textarea rows="3" placeholder="¿Cómo podemos ayudarte? (Opcional)"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">Solicitar Contacto</button>
+                </form>
+            </div>
         </div>
     </section>
 
-    <!-- Pie de Página (Footer con Redes Sociales) -->
+    <!-- Footer con tus enlaces reales -->
     <footer>
         <div class="social-icons">
-            <!-- Reemplaza el "#" con el link real de tu página de Facebook -->
-            <a href="https://web.facebook.com/profile.php?id=61593327594252&sk=about" target="_blank" title="Síguenos en Facebook">
-                <i class="fa-brands fa-facebook"></i>
-            </a>
-            <!-- Reemplaza el "#" con el link real de tu Instagram -->
-            <a href="https://www.instagram.com/comanduprest/" target="_blank" title="Síguenos en Instagram">
-                <i class="fa-brands fa-instagram"></i>
-            </a>
+            <a href="https://web.facebook.com/profile.php?id=61593327594252&sk=about" target="_blank" title="Síguenos en Facebook"><i class="fa-brands fa-facebook"></i></a>
+            <a href="https://www.instagram.com/comanduprest/" target="_blank" title="Síguenos en Instagram"><i class="fa-brands fa-instagram"></i></a>
         </div>
-        <p>&copy; 2026 ComandUp. Todos los derechos reservados.</p>
+        <p>&copy; 2026 ComandUp. Universidad Politécnica de Victoria. Todos los derechos reservados.</p>
     </footer>
 
+    <!-- Simulación de envío del formulario -->
+    <script>
+        document.getElementById('leadForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert("¡Mensaje enviado con éxito! Un asesor de ComandUp te contactará pronto.");
+            this.reset();
+        });
+    </script>
 </body>
 </html>
