@@ -3,65 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Suscripción Pro | ComandUp</title>
+    <title>Adquirir Licencia | ComandUp</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body style="background: var(--light); display: flex; flex-direction: column; min-height: 100vh;">
+<body>
 
-    <!-- Navegación -->
-    <header>
+    <header class="animate-fade">
         <div style="display: flex; align-items: center; gap: 12px;">
             <img src="Designer.png" alt="ComandUp Logo">
             <h1>ComandUp</h1>
         </div>
-        <a href="index.html" class="btn">Volver al Inicio</a>
+        <a href="index.html" class="btn">Cancelar y Volver</a>
     </header>
 
-    <!-- Formulario de Pago Simulado -->
-    <section style="flex: 1; display: flex; justify-content: center; align-items: center; padding: 40px 20px;">
-        <div class="form-container" style="width: 100%; max-width: 500px; text-align: left;">
-            <h3 style="text-align: center; margin-bottom: 5px;">Completar Suscripción</h3>
-            <p style="text-align: center; color: var(--primary); font-weight: 600; margin-bottom: 20px;">Plan Pro: $999.00 MXN / mes</p>
+    <div class="checkout-wrapper animate-up">
+        <div class="checkout-card">
+            <!-- Columna Izquierda: Resumen -->
+            <div class="checkout-summary">
+                <h3>Resumen del Pedido</h3>
+                <ul>
+                    <li><i class="fa-solid fa-circle-check"></i> Licencia ComandUp Pro</li>
+                    <li><i class="fa-solid fa-circle-check"></i> Alertas antifraude ilimitadas</li>
+                    <li><i class="fa-solid fa-circle-check"></i> Soporte técnico 24/7</li>
+                    <li><i class="fa-solid fa-circle-check"></i> Servidor en la nube dedicado</li>
+                </ul>
+                <p style="opacity: 0.8;">Suscripción mensual recurrente</p>
+                <div class="total">Total: $999.00 <span style="font-size: 16px;">MXN</span></div>
+            </div>
             
-            <form id="paymentForm">
-                <p style="color: #dc3545; font-size: 13px; margin-bottom: 15px; text-align: center;">* Entorno de prueba: Usa datos ficticios.</p>
-                
-                <div style="margin-bottom: 15px;">
-                    <label style="display: block; font-weight: 600; margin-bottom: 5px;">Titular de la cuenta</label>
-                    <input type="text" placeholder="Ej. Yandi Melina" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px;">
-                </div>
-                
-                <div style="margin-bottom: 15px;">
-                    <label style="display: block; font-weight: 600; margin-bottom: 5px;">Número de Tarjeta</label>
-                    <input type="text" placeholder="0000 0000 0000 0000" maxlength="16" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px;">
-                </div>
-                
-                <div style="display: flex; gap: 15px; margin-bottom: 25px;">
-                    <div style="flex: 1;">
-                        <label style="display: block; font-weight: 600; margin-bottom: 5px;">Vencimiento</label>
-                        <input type="text" placeholder="MM/AA" maxlength="5" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px;">
+            <!-- Columna Derecha: Formulario -->
+            <div class="checkout-form-container">
+                <h3>Detalles de Facturación</h3>
+                <form id="paymentForm">
+                    <p style="color: #dc3545; font-size: 12px; margin-bottom: 15px; background: #fff3f3; padding: 10px; border-radius: 5px; text-align: center;">
+                        <i class="fa-solid fa-triangle-exclamation"></i> Entorno de prueba activo. No ingreses datos bancarios reales.
+                    </p>
+                    
+                    <div class="input-wrapper">
+                        <i class="fa-regular fa-user"></i>
+                        <input type="text" placeholder="Nombre del titular" required>
                     </div>
-                    <div style="flex: 1;">
-                        <label style="display: block; font-weight: 600; margin-bottom: 5px;">CVV</label>
-                        <input type="password" placeholder="123" maxlength="3" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px;">
+                    
+                    <div class="input-wrapper">
+                        <i class="fa-regular fa-credit-card"></i>
+                        <input type="text" placeholder="Número de Tarjeta (0000 0000 0000 0000)" maxlength="16" required>
                     </div>
-                </div>
-                
-                <button type="submit" class="btn btn-primary" style="width: 100%; font-size: 16px;">Procesar Pago Seguro</button>
-            </form>
+                    
+                    <div style="display: flex; gap: 15px;">
+                        <div class="input-wrapper" style="flex: 1;">
+                            <i class="fa-regular fa-calendar"></i>
+                            <input type="text" placeholder="MM/AA" maxlength="5" required>
+                        </div>
+                        <div class="input-wrapper" style="flex: 1;">
+                            <i class="fa-solid fa-lock"></i>
+                            <input type="password" placeholder="CVV" maxlength="3" required>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary" style="width: 100%; font-size: 16px; padding: 15px; margin-top: 10px;">
+                        <i class="fa-solid fa-shield-halved"></i> Procesar Pago Seguro
+                    </button>
+                    
+                    <div class="trust-badge">
+                        <i class="fa-solid fa-lock"></i> Pago cifrado con seguridad SSL de 256 bits
+                    </div>
+                </form>
+            </div>
         </div>
-    </section>
+    </div>
 
-    <!-- Pie de Página -->
-    <footer style="padding: 20px; text-align: center; background: var(--dark); color: #888;">
-        <p style="border: none; margin: 0; padding: 0;">&copy; 2026 ComandUp. Todos los derechos reservados.</p>
-    </footer>
-
-    <!-- Lógica de Simulación -->
     <script>
         document.getElementById('paymentForm').addEventListener('submit', function(e) {
             e.preventDefault(); 
-            alert("¡Transacción aprobada! Tu restaurante ahora opera con ComandUp.");
+            alert("¡Transacción aprobada! Bienvenido a ComandUp, tu restaurante ahora está protegido.");
             window.location.href = "index.html"; 
         });
     </script>
