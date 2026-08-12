@@ -108,8 +108,8 @@
             </div>
             
             <div class="native-form animate-up">
-                <!-- Formulario Conectado a Gmail -->
-                <form action="https://formsubmit.co/comanduprest@gmail.com" method="POST">
+                <!-- Agregamos un id="contactForm" para controlarlo con JavaScript -->
+                <form id="contactForm" action="https://formsubmit.co/comanduprest@gmail.com" method="POST">
                     
                     <!-- Configuraciones ocultas de FormSubmit -->
                     <input type="hidden" name="_next" value="https://yandisolis.github.io/comandup-webhook/">
@@ -149,12 +149,11 @@
         <p>&copy; 2026 ComandUp. Universidad Politécnica de Victoria. Todos los derechos reservados.</p>
     </footer>
 
-    <!-- Simulación de envío del formulario -->
+    <!-- Script para notificar al usuario el envío exitoso -->
     <script>
-        document.getElementById('leadForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            alert("¡Mensaje enviado con éxito! Un asesor de ComandUp te contactará pronto.");
-            this.reset();
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            // Mostramos una alerta visual elegante de éxito antes de que redirija a FormSubmit
+            alert("¡Mensaje preparado con éxito! Redirigiendo para completar el envío a ComandUp.");
         });
     </script>
 </body>
