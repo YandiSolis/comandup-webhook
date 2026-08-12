@@ -284,3 +284,19 @@ footer p {
         grid-template-columns: 1fr;
     }
 }
+
+.nav-links .client-acc {
+    color: var(--primary);
+    background: rgba(0, 104, 55, 0.1);
+    padding: 8px 15px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+}
+
+.nav-links .client-acc:hover {
+    background: rgba(0, 104, 55, 0.2);
+    transform: translateY(-1px);
+}
