@@ -151,10 +151,16 @@
         <p>&copy; 2026 ComandUp. Universidad Politécnica de Victoria. Todos los derechos reservados.</p>
     </footer>
 
-    <!-- Script para notificar al usuario el envío exitoso -->
+    <!-- Script para notificar al usuario y guardar datos en memoria -->
     <script>
         document.getElementById('contactForm').addEventListener('submit', function(e) {
-            // Mostramos una alerta visual elegante de éxito antes de que redirija a FormSubmit
+            // 1. Atrapamos el valor que el usuario escribió en el campo "Restaurante"
+            const nombreRestaurante = document.querySelector('input[name="Restaurante"]').value;
+            
+            // 2. Lo guardamos en la memoria local del navegador
+            localStorage.setItem('restauranteGuardado', nombreRestaurante);
+            
+            // 3. Mostramos la alerta de éxito
             alert("¡Mensaje preparado con éxito! Redirigiendo para completar el envío a ComandUp.");
         });
     </script>

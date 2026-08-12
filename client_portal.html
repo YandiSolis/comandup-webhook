@@ -30,8 +30,7 @@
     <!-- Contenido del Portal del Cliente -->
     <section style="flex: 1; padding: 60px 8%;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px;">
-            <h2 style="font-size: 32px; color: var(--dark);">Bienvenido, <span style="color: var(--primary);">Restaurante "El Fuego"</span></h2>
-            <span style="background: #e3fcef; color: #006644; padding: 8px 15px; border-radius: 20px; font-weight: 600; font-size: 14px;">
+            <h2 style="font-size: 32px; color: var(--dark);">Bienvenido, <span id="nombreClienteRestaurante" style="color: var(--primary);">Restaurante "El Fuego"</span></h2>            <span style="background: #e3fcef; color: #006644; padding: 8px 15px; border-radius: 20px; font-weight: 600; font-size: 14px;">
                 <i class="fa-solid fa-check-circle"></i> Suscripción Pro Activa
             </span>
         </div>
@@ -94,4 +93,16 @@
     </footer>
 
 </body>
+<!-- Script para cargar el nombre del restaurante desde la memoria -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 1. Buscamos si hay algo guardado en la memoria
+            const restauranteMemoria = localStorage.getItem('restauranteGuardado');
+            
+            // 2. Si sí hay algo guardado, reemplazamos el texto
+            if (restauranteMemoria) {
+                document.getElementById('nombreClienteRestaurante').innerText = 'Restaurante "' + restauranteMemoria + '"';
+            }
+        });
+    </script>
 </html>
