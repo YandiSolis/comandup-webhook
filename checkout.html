@@ -32,32 +32,42 @@
                 <div class="total">Total: $999.00 <span style="font-size: 16px;">MXN</span></div>
             </div>
             
-            <!-- Columna Derecha: Formulario -->
+            <!-- Columna Derecha: Formulario con Validaciones -->
             <div class="checkout-form-container">
                 <h3>Detalles de Facturación</h3>
                 <form id="paymentForm">
                     <p style="color: #dc3545; font-size: 12px; margin-bottom: 15px; background: #fff3f3; padding: 10px; border-radius: 5px; text-align: center;">
-                        <i class="fa-solid fa-triangle-exclamation"></i> Entorno de prueba activo. No ingreses datos bancarios reales.
+                        <i class="fa-solid fa-triangle-exclamation"></i> Entorno de prueba. Validaciones de formato activas.
                     </p>
-                    
+
+                    <!-- Campo de Correo Nuevo -->
                     <div class="input-wrapper">
-                        <i class="fa-regular fa-user"></i>
-                        <input type="text" placeholder="Nombre del titular" required>
+                        <i class="fa-regular fa-envelope"></i>
+                        <input type="email" id="customerEmail" placeholder="Correo electrónico para recibir factura" required>
                     </div>
                     
+                    <!-- Campo Nombre (Solo letras y espacios) -->
+                    <div class="input-wrapper">
+                        <i class="fa-regular fa-user"></i>
+                        <input type="text" id="cardName" placeholder="Nombre del titular" required pattern="[A-Za-záéíóúÁÉÍÓÚñÑ\s]+" title="Solo se permiten letras y espacios">
+                    </div>
+                    
+                    <!-- Campo Tarjeta (Solo 16 números) -->
                     <div class="input-wrapper">
                         <i class="fa-regular fa-credit-card"></i>
-                        <input type="text" placeholder="Número de Tarjeta (0000 0000 0000 0000)" maxlength="16" required>
+                        <input type="text" id="cardNumber" placeholder="Número de Tarjeta (16 dígitos sin espacios)" maxlength="16" required pattern="\d{16}" title="Debe contener exactamente 16 números">
                     </div>
                     
                     <div style="display: flex; gap: 15px;">
+                        <!-- Campo Expiración (Mes válido + Año) -->
                         <div class="input-wrapper" style="flex: 1;">
                             <i class="fa-regular fa-calendar"></i>
-                            <input type="text" placeholder="MM/AA" maxlength="5" required>
+                            <input type="text" id="cardExpiry" placeholder="MM/AA" maxlength="5" required pattern="(0[1-9]|1[0-2])\/\d{2}" title="Formato válido: MM/AA (ej. 12/28)">
                         </div>
+                        <!-- Campo CVV (Solo 3 números) -->
                         <div class="input-wrapper" style="flex: 1;">
                             <i class="fa-solid fa-lock"></i>
-                            <input type="password" placeholder="CVV" maxlength="3" required>
+                            <input type="password" id="cardCvv" placeholder="CVV" maxlength="3" required pattern="\d{3}" title="Debe contener exactamente 3 números">
                         </div>
                     </div>
                     
@@ -73,10 +83,48 @@
         </div>
     </div>
 
+    <!-- Scripts de Validación en Tiempo Real -->
     <script>
+        // 1. Evitar que se escriban números o símbolos en el Nombre
+        document.getElementById('cardName').addEventListener('input', function(e) {
+            this.value = this.value.replace(/[^A-Za-záéíóúÁÉÍÓÚñÑ\s]/g, '');
+        });
+
+        // 2. Evitar letras en la Tarjeta
+        document.getElementById('cardNumber').addEventListener('input', function(e) {
+            this.value = this.value.replace(/\D/g, ''); // \D significa "todo lo que no sea número"
+        });
+
+        // 3. Evitar letras en el CVV
+        document.getElementById('cardCvv').addEventListener('input', function(e) {
+            this.value = this.value.replace(/\D/g, '');
+        });
+
+        // 4. Lógica inteligente para la Fecha de Expiración
+        document.getElementById('cardExpiry').addEventListener('input', function(e) {
+            let val = this.value.replace(/\D/g, ''); // Quitar todo lo que no sea número
+            
+            if (val.length >= 2) {
+                // Extraer el mes y validar que no sea mayor a 12 ni igual a 00
+                let month = parseInt(val.substring(0, 2));
+                if (month > 12) val = '12' + val.substring(2);
+                if (month === 0) val = '01' + val.substring(2);
+                
+                // Agregar la diagonal automáticamente
+                this.value = val.substring(0, 2) + '/' + val.substring(2, 4);
+            } else {
+                this.value = val;
+            }
+        });
+
+        // 5. Simulación de envío exitoso y notificación al correo
         document.getElementById('paymentForm').addEventListener('submit', function(e) {
             e.preventDefault(); 
-            alert("¡Transacción aprobada! Bienvenido a ComandUp, tu restaurante ahora está protegido.");
+            const email = document.getElementById('customerEmail').value;
+            const name = document.getElementById('cardName').value;
+            
+            alert(`¡Transacción aprobada, ${name}!\n\nSe ha enviado la factura correspondiente y los accesos de la plataforma a tu correo:\n${email}\n\nBienvenido a la red de ComandUp.`);
+            
             window.location.href = "index.html"; 
         });
     </script>
