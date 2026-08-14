@@ -1,6 +1,6 @@
 const express = require('express');
 const axios = require('axios');
-const cron = require('node-cron'); // 👈 Importamos el reloj
+const cron = require('node-cron');
 const app = express();
 
 app.use(express.json());
@@ -39,6 +39,7 @@ app.post('/webhook/alertas', async (req, res) => {
 
         if (enviarAlerta) {
             try {
+                // ESTA ALERTA VA SOLO PARA EL GERENTE
                 const url = `https://7107.api.greenapi.com/waInstance${process.env.ID_INSTANCE}/sendMessage/${process.env.API_TOKEN_INSTANCE}`;
                 await axios.post(url, { chatId: process.env.PHONE_GERENTE, message: mensajeWhatsApp });
             } catch (error) { console.error("❌ Error enviando alerta:", error.message); }
@@ -47,10 +48,17 @@ app.post('/webhook/alertas', async (req, res) => {
     else if (datos.triggercode === 'PRODUCT_MODIFY') {
         const producto = datos.object;
         if (producto.status == 0) {
-            const msj = `🛑 *ALERTA COMANDUP: PRODUCTO AGOTADO (86)* 🛑\nEl platillo *${producto.label}* está FUERA DE VENTA.`;
+            const msj = `🛑 *ALERTA COMANDUP: PRODUCTO AGOTADO (86)* 🛑\nEl platillo *${producto.label}* está FUERA DE VENTA. No lo ofrezcan hasta nuevo aviso.`;
             try {
                 const url = `https://7107.api.greenapi.com/waInstance${process.env.ID_INSTANCE}/sendMessage/${process.env.API_TOKEN_INSTANCE}`;
+                
+                // 1. Enviamos copia al Gerente para control
                 await axios.post(url, { chatId: process.env.PHONE_GERENTE, message: msj });
+                
+                // 2. Enviamos al grupo de meseros (si configuraste la variable)
+                if (process.env.GROUP_MESEROS) {
+                    await axios.post(url, { chatId: process.env.GROUP_MESEROS, message: msj });
+                }
             } catch (error) { console.error("❌ Error enviando 86:", error.message); }
         }
     }
@@ -81,25 +89,26 @@ app.post('/webhook/whatsapp', async (req, res) => {
 });
 
 // ==========================================
-// 3. CORTE DE CAJA AUTOMÁTICO (El Reloj)
+// 3. CORTE DE CAJA AUTOMÁTICO (El Reloj Corregido)
 // ==========================================
+// Agregamos el parámetro de Timezone para que respete el horario local y no el del servidor
 cron.schedule('0 22 * * *', async () => {
     console.log("⏰ ¡Reloj activado! Generando cierre de caja automático...");
     const textoCierre = `🌙 *CIERRE DE TURNO COMANDUP* 🌙\n\nEl turno ha finalizado de manera automática. Resumen de hoy:\n\n🧾 *Total de tickets:* ${ticketsAtendidos}\n💰 *Ingresos totales:* $${ventasDelDia.toFixed(2)}\n\n_La caja virtual ha sido reiniciada para mañana. ¡Buen descanso!_`;
 
     try {
         const urlGreenAPI = `https://7107.api.greenapi.com/waInstance${process.env.ID_INSTANCE}/sendMessage/${process.env.API_TOKEN_INSTANCE}`;
-        // Mandamos el mensaje al gerente usando la variable de entorno
         await axios.post(urlGreenAPI, { chatId: process.env.PHONE_GERENTE, message: textoCierre });
         console.log("✅ Corte de caja automático enviado a WhatsApp.");
 
-        // Vaciamos para el día siguiente
         ventasDelDia = 0;
         ticketsAtendidos = 0;
 
     } catch (error) {
         console.error("❌ Error al enviar el corte automático:", error.message);
     }
+}, {
+    timezone: "America/Monterrey"
 });
 
 const PORT = process.env.PORT || 8080;
