@@ -39,7 +39,6 @@ app.post('/webhook/alertas', async (req, res) => {
 
         if (enviarAlerta) {
             try {
-                // ESTA ALERTA VA SOLO PARA EL GERENTE
                 const url = `https://7107.api.greenapi.com/waInstance${process.env.ID_INSTANCE}/sendMessage/${process.env.API_TOKEN_INSTANCE}`;
                 await axios.post(url, { chatId: process.env.PHONE_GERENTE, message: mensajeWhatsApp });
             } catch (error) { console.error("❌ Error enviando alerta:", error.message); }
@@ -47,19 +46,27 @@ app.post('/webhook/alertas', async (req, res) => {
     } 
     else if (datos.triggercode === 'PRODUCT_MODIFY') {
         const producto = datos.object;
+        const urlGreenAPI = `https://7107.api.greenapi.com/waInstance${process.env.ID_INSTANCE}/sendMessage/${process.env.API_TOKEN_INSTANCE}`;
+
+        // CUANDO SE ACABA EL PRODUCTO (Estado 0)
         if (producto.status == 0) {
-            const msj = `🛑 *ALERTA COMANDUP: PRODUCTO AGOTADO (86)* 🛑\nEl platillo *${producto.label}* está FUERA DE VENTA. No lo ofrezcan hasta nuevo aviso.`;
+            const msjAgotado = `🛑 *ALERTA COMANDUP: PRODUCTO AGOTADO (86)* 🛑\nEl platillo *${producto.label}* está FUERA DE VENTA. No lo ofrezcan hasta nuevo aviso.`;
             try {
-                const url = `https://7107.api.greenapi.com/waInstance${process.env.ID_INSTANCE}/sendMessage/${process.env.API_TOKEN_INSTANCE}`;
-                
-                // 1. Enviamos copia al Gerente para control
-                await axios.post(url, { chatId: process.env.PHONE_GERENTE, message: msj });
-                
-                // 2. Enviamos al grupo de meseros (si configuraste la variable)
+                await axios.post(urlGreenAPI, { chatId: process.env.PHONE_GERENTE, message: msjAgotado });
                 if (process.env.GROUP_MESEROS) {
-                    await axios.post(url, { chatId: process.env.GROUP_MESEROS, message: msj });
+                    await axios.post(urlGreenAPI, { chatId: process.env.GROUP_MESEROS, message: msjAgotado });
                 }
             } catch (error) { console.error("❌ Error enviando 86:", error.message); }
+        } 
+        // CUANDO REGRESA A LA VENTA (Estado 1)
+        else if (producto.status == 1) {
+            const msjDisponible = `✅ *ALERTA COMANDUP: PRODUCTO DISPONIBLE* ✅\nEl platillo *${producto.label}* vuelve a estar a la venta. ¡Ya pueden ofrecerlo de nuevo!`;
+            try {
+                await axios.post(urlGreenAPI, { chatId: process.env.PHONE_GERENTE, message: msjDisponible });
+                if (process.env.GROUP_MESEROS) {
+                    await axios.post(urlGreenAPI, { chatId: process.env.GROUP_MESEROS, message: msjDisponible });
+                }
+            } catch (error) { console.error("❌ Error enviando alerta de disponibilidad:", error.message); }
         }
     }
     res.status(200).send("Webhook Dolibarr procesado");
