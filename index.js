@@ -73,25 +73,43 @@ app.post('/webhook/alertas', async (req, res) => {
 });
 
 // ==========================================
-// 2. OÍDO PARA WHATSAPP (El Chatbot)
+// 2. OÍDO PARA WHATSAPP (El Chatbot con Radar)
 // ==========================================
 app.post('/webhook/whatsapp', async (req, res) => {
     try {
         const webhookData = req.body;
+        console.log("📱 [RADAR WA] Webhook recibido tipo:", webhookData.typeWebhook);
+
         if (webhookData.typeWebhook === 'incomingMessageReceived' || webhookData.typeWebhook === 'outgoingMessageReceived') {
             const messageData = webhookData.messageData || {};
-            let mensajeBruto = messageData.typeMessage === 'textMessage' ? messageData.textMessageData?.textMessage : (messageData.typeMessage === 'extendedTextMessage' ? messageData.extendedTextMessageData?.text : "");
+            let mensajeBruto = "";
+            
+            // Extraemos el texto sin importar si es un mensaje normal o una respuesta
+            if (messageData.typeMessage === 'textMessage') {
+                mensajeBruto = messageData.textMessageData?.textMessage;
+            } else if (messageData.typeMessage === 'extendedTextMessage') {
+                mensajeBruto = messageData.extendedTextMessageData?.text;
+            }
             
             const mensaje = (mensajeBruto || "").trim().toLowerCase();
             const chatId = webhookData.senderData?.chatId;
 
+            console.log(`💬 [RADAR WA] Mensaje leído en chat ${chatId}: "${mensaje}"`);
+
             if (mensaje === '!reporte') {
+                console.log("📊 [RADAR WA] Comando !reporte detectado. Preparando envío...");
                 const msj = `📊 *REPORTE RÁPIDO COMANDUP*\n\n🧾 *Tickets:* ${ticketsAtendidos}\n💰 *Ventas:* $${ventasDelDia.toFixed(2)}`;
                 const url = `https://7107.api.greenapi.com/waInstance${process.env.ID_INSTANCE}/sendMessage/${process.env.API_TOKEN_INSTANCE}`;
+                
                 await axios.post(url, { chatId: chatId, message: msj });
+                console.log("✅ [RADAR WA] Reporte enviado con éxito a WhatsApp.");
             }
         }
-    } catch (error) { console.error("❌ Error WhatsApp:", error.message); }
+    } catch (error) { 
+        console.error("❌ [RADAR WA] Error en el Chatbot:", error.message); 
+    }
+    
+    // Siempre hay que responderle un 200 a GreenAPI para que no crea que el servidor está caído
     res.status(200).send("Webhook GreenAPI procesado");
 });
 
