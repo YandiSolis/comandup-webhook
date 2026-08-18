@@ -47,15 +47,16 @@
                 <thead>
                     <tr>
                         <th>Restaurante</th>
+                        <th>Correo de Contacto</th>
                         <th>Plan</th>
-                        <th>Cantidad Pagada</th>
+                        <th>Monto Recurrente</th>
                         <th>Inicio de Cuenta</th>
                         <th>Vencimiento</th>
                         <th>Estado</th>
                     </tr>
                 </thead>
                 <tbody id="tablaClientes">
-                    <tr><td colspan="6" style="text-align: center;">Cargando base de datos...</td></tr>
+                    <tr><td colspan="7" style="text-align: center;">Cargando base de datos...</td></tr>
                 </tbody>
             </table>
         </div>
@@ -86,6 +87,11 @@
                         htmlFilas += `
                             <tr>
                                 <td style="font-weight: bold; color: #2b3a4a;">${cliente.restaurante}</td>
+                                <td style="color: #0066cc;">
+                                    <a href="mailto:${cliente.email}" style="color: inherit; text-decoration: none;">
+                                        <i class="fa-regular fa-envelope"></i> ${cliente.email}
+                                    </a>
+                                </td>
                                 <td>${cliente.plan}</td>
                                 <td>${monto}</td>
                                 <td>${inicio}</td>
@@ -98,7 +104,7 @@
                     document.getElementById('totalClientes').innerText = datos.clientes.length;
                 }
             } catch (error) {
-                document.getElementById('tablaClientes').innerHTML = '<tr><td colspan="6" style="color: red; text-align: center;">Error de conexión.</td></tr>';
+                document.getElementById('tablaClientes').innerHTML = '<tr><td colspan="7" style="color: red; text-align: center;">Error de conexión con el servidor.</td></tr>';
             }
         });
 

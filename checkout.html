@@ -19,21 +19,23 @@
     <div class="checkout-wrapper animate-up" style="padding: 40px 8%;">
         <div class="checkout-card" style="display: flex; gap: 30px; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); flex-wrap: wrap;">
             
-            <!-- Columna Izquierda: AHORA ES VERDE -->
-            <div class="checkout-summary" style="flex: 1; min-width: 300px; background: #008f68; color: white; padding: 25px; border-radius: 8px;">
-                <h3 style="margin-top: 0; color: white;"><i class="fa-solid fa-cart-shopping"></i> Resumen del Pedido</h3>
-                <ul style="list-style: none; padding: 0; line-height: 2;">
-                    <li><i class="fa-solid fa-circle-check" style="color: #a3e6cd;"></i> Licencia Oficial ComandUp</li>
-                    <li><i class="fa-solid fa-circle-check" style="color: #a3e6cd;"></i> Alertas antifraude activas</li>
-                    <li><i class="fa-solid fa-circle-check" style="color: #a3e6cd;"></i> Soporte técnico especializado</li>
-                    <li><i class="fa-solid fa-circle-check" style="color: #a3e6cd;"></i> Integración a la nube</li>
-                </ul>
+            <!-- Columna Izquierda: Panel Dinámico -->
+            <div class="checkout-summary" style="flex: 1; min-width: 300px; background: #008f68; color: white; padding: 25px; border-radius: 8px; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <h3 style="margin-top: 0; color: white;"><i class="fa-solid fa-cart-shopping"></i> Resumen del Pedido</h3>
+                    
+                    <!-- Aquí inyectaremos los beneficios con JS -->
+                    <ul id="listaBeneficios" style="list-style: none; padding: 0; line-height: 2;">
+                        <!-- Se llena automáticamente al cargar -->
+                    </ul>
+                </div>
+                
                 <div style="margin-top: 20px; font-size: 24px; font-weight: bold; color: white;" id="totalPrice">
-                    $999.00 <span style="font-size: 14px; color: #d1f2e6;">MXN / mes</span>
+                    <!-- Se llena automáticamente al cargar -->
                 </div>
             </div>
             
-            <!-- Columna Derecha: Formulario y Selección de Plan -->
+            <!-- Columna Derecha: Formulario -->
             <div class="checkout-form-container" style="flex: 2; min-width: 300px;">
                 <h3 style="margin-top: 0;">Detalles de la Cuenta y Pago</h3>
                 <form id="paymentForm">
@@ -42,7 +44,8 @@
                     <div class="input-wrapper" style="margin-bottom: 20px;">
                         <i class="fa-solid fa-layer-group"></i>
                         <select id="planSelect" required style="width: 100%; padding: 10px 10px 10px 35px; border: 1px solid #ddd; border-radius: 5px; appearance: none; background: white;">
-                            <option value="Premium">ComandUp Premium - $999 MXN / Mes</option>
+                            <!-- Lo ponemos como Premium por defecto -->
+                            <option value="Premium" selected>ComandUp Premium - $999 MXN / Mes</option>
                             <option value="Pro">ComandUp Pro - $8,990 MXN / Año (Ahorras 25%)</option>
                             <option value="Basico">ComandUp Básico - $499 MXN / Mes</option>
                         </select>
@@ -77,20 +80,50 @@
     </div>
 
     <script>
-        // Actualizar el precio dinámico en pantalla
-        document.getElementById('planSelect').addEventListener('change', function() {
+        // DICCIONARIO DE BENEFICIOS POR PLAN
+        const beneficiosPlanes = {
+            'Basico': `
+                <li><i class="fa-solid fa-circle-check" style="color: #a3e6cd;"></i> Licencia ComandUp Básica</li>
+                <li><i class="fa-solid fa-circle-check" style="color: #a3e6cd;"></i> Reporte de tickets (Comando Manual)</li>
+                <li><i class="fa-solid fa-circle-check" style="color: #a3e6cd;"></i> Soporte técnico por correo</li>
+            `,
+            'Premium': `
+                <li><i class="fa-solid fa-circle-check" style="color: #a3e6cd;"></i> Licencia ComandUp Premium</li>
+                <li><i class="fa-solid fa-circle-check" style="color: #a3e6cd;"></i> Alertas de Menú Agotado (Módulo 86)</li>
+                <li><i class="fa-solid fa-circle-check" style="color: #a3e6cd;"></i> Corte de caja automático a WhatsApp</li>
+                <li><i class="fa-solid fa-circle-check" style="color: #a3e6cd;"></i> Soporte técnico directo (WhatsApp)</li>
+            `,
+            'Pro': `
+                <li><i class="fa-solid fa-circle-check" style="color: #a3e6cd;"></i> Licencia Oficial ComandUp Pro</li>
+                <li><i class="fa-solid fa-circle-check" style="color: #a3e6cd;"></i> Alertas antifraude en tiempo real</li>
+                <li><i class="fa-solid fa-circle-check" style="color: #a3e6cd;"></i> Integración Multi-Sucursal unificada</li>
+                <li><i class="fa-solid fa-circle-check" style="color: #a3e6cd;"></i> Soporte prioritario 24/7 (Línea directa)</li>
+            `
+        };
+
+        const preciosPlanes = {
+            'Basico': '$499.00 <span style="font-size: 14px; color: #d1f2e6;">MXN / mes</span>',
+            'Premium': '$999.00 <span style="font-size: 14px; color: #d1f2e6;">MXN / mes</span>',
+            'Pro': '$8,990.00 <span style="font-size: 14px; color: #d1f2e6;">MXN / año</span>'
+        };
+
+        // Escucha cuando el cliente cambia el plan en el menú desplegable
+        const planSelect = document.getElementById('planSelect');
+        planSelect.addEventListener('change', function() {
             const plan = this.value;
-            let totalHtml = '';
-            if(plan === 'Pro') totalHtml = '$8,990.00 <span style="font-size: 14px; color: #d1f2e6;">MXN / año</span>';
-            else if(plan === 'Premium') totalHtml = '$999.00 <span style="font-size: 14px; color: #d1f2e6;">MXN / mes</span>';
-            else totalHtml = '$499.00 <span style="font-size: 14px; color: #d1f2e6;">MXN / mes</span>';
-            document.getElementById('totalPrice').innerHTML = totalHtml;
+            document.getElementById('listaBeneficios').innerHTML = beneficiosPlanes[plan];
+            document.getElementById('totalPrice').innerHTML = preciosPlanes[plan];
         });
 
+        // Simular un cambio al entrar para que cargue la info del "Premium" por defecto
+        planSelect.dispatchEvent(new Event('change'));
+
+        // Formato visual tarjeta
         document.getElementById('cardNumber').addEventListener('input', function() {
             this.value = this.value.replace(/\D/g, '').substring(0, 16);
         });
 
+        // ENVÍO AL SERVIDOR
         document.getElementById('paymentForm').addEventListener('submit', async function(e) {
             e.preventDefault(); 
             const btnSubmit = document.getElementById('btnSubmit');
