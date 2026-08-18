@@ -140,3 +140,51 @@ const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
     console.log(`🚀 Servidor ComandUp en línea (Puerto ${PORT})`);
 });
+
+
+
+
+const cors = require('cors');
+const mysql = require('mysql2/promise');
+
+// Permitir peticiones desde tu página en GitHub Pages
+app.use(cors()); 
+
+// Conexión a la BD de Railway (llena estos datos con los que te da Railway)
+const dbPool = mysql.createPool({
+    host: process.env.MYSQL_HOST,
+    user: process.env.MYSQL_USER,
+    password: process.env.MYSQL_PASSWORD,
+    database: process.env.MYSQL_DATABASE,
+    port: process.env.MYSQL_PORT
+});
+
+// ==========================================
+// RUTA DE LOGIN (Para Admin y Clientes)
+// ==========================================
+app.post('/api/login', async (req, res) => {
+    const { email, password } = req.body;
+    try {
+        const [rows] = await dbPool.query('SELECT id, restaurante, rol, plan, fecha_vencimiento, estado FROM usuarios_saas WHERE email = ? AND password = ?', [email, password]);
+        
+        if (rows.length > 0) {
+            res.json({ success: true, usuario: rows[0] });
+        } else {
+            res.status(401).json({ success: false, mensaje: 'Credenciales incorrectas' });
+        }
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+// ==========================================
+// RUTA PARA VER TODOS LOS CLIENTES (Solo Admin)
+// ==========================================
+app.get('/api/clientes', async (req, res) => {
+    try {
+        const [rows] = await dbPool.query('SELECT * FROM usuarios_saas WHERE rol = "cliente"');
+        res.json({ success: true, clientes: rows });
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+});

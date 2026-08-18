@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión | ComandUp</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body style="background: var(--light); display: flex; flex-direction: column; min-height: 100vh;">
+
+    <!-- Navegación -->
+    <header>
+        <div style="display: flex; align-items: center; gap: 12px;">
+            <img src="Designer.png" alt="ComandUp Logo">
+            <h1>ComandUp</h1>
+        </div>
+        <a href="index.html" class="btn">Volver al Inicio</a>
+    </header>
+
+    <!-- Contenedor del Login -->
+    <section style="flex: 1; display: flex; justify-content: center; align-items: center; padding: 20px;">
+        <div class="checkout-card" style="max-width: 400px; width: 100%; padding: 40px; text-align: center;">
+            <h2 style="margin-bottom: 25px; color: var(--dark);">Acceso a Clientes</h2>
+            
+            <div class="input-wrapper" style="margin-bottom: 15px;">
+                <i class="fa-regular fa-envelope"></i>
+                <input type="email" id="email" placeholder="Correo electrónico" required>
+            </div>
+            
+            <div class="input-wrapper" style="margin-bottom: 25px;">
+                <i class="fa-solid fa-lock"></i>
+                <input type="password" id="password" placeholder="Contraseña" required>
+            </div>
+
+            <!-- Botón que dispara la función de JS -->
+            <button onclick="iniciarSesion()" class="btn btn-primary" style="width: 100%; padding: 15px; font-size: 16px;">
+                Iniciar Sesión
+            </button>
+        </div>
+    </section>
+
+    <!-- Pie de Página -->
+    <footer>
+        <p>&copy; 2026 ComandUp. Universidad Politécnica de Victoria. Todos los derechos reservados.</p>
+    </footer>
+
+    <!-- AQUÍ VA TU LÓGICA DE JAVASCRIPT -->
+    <script>
+        async function iniciarSesion() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            // OJO: Recuerda cambiar 'tu-proyecto-railway.app' por el link real de tu Railway
+            const respuesta = await fetch('https://comandup-webhook-production.up.railway.app/api/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password })
+            });
+
+            const datos = await respuesta.json();
+
+            if (datos.success) {
+                // Guardamos los datos en el navegador
+                localStorage.setItem('usuarioLogueado', JSON.stringify(datos.usuario));
+
+                // El "Árbitro" de vistas
+                if (datos.usuario.rol === 'admin') {
+                    // Si eres tú (SuperAdmin), te manda al panel de control
+                    window.location.href = 'dashboard_admin.html'; 
+                } else {
+                    // Si es un cliente, lo manda al portal que ya tienes creado
+                    window.location.href = 'client_portal.html'; 
+                }
+            } else {
+                alert("Usuario o contraseña incorrectos");
+            }
+        }
+    </script>
+</body>
+</html>
