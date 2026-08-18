@@ -2,107 +2,68 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portal del Cliente | ComandUp</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body style="background: var(--light); display: flex; flex-direction: column; min-height: 100vh;">
 
-    <!-- Barra Superior y Navegación (Igual que el index) -->
-    <div class="top-bar">
-        <div>
-            <span style="margin-right: 15px;"><i class="fa-solid fa-envelope"></i> ventas@comandup.com</span>
-            <span><i class="fa-solid fa-phone"></i> +52 (834) 150-0040</span>
-        </div>
-        <div>
-            <span><i class="fa-solid fa-location-dot"></i> Ciudad Victoria, Tam.</span>
-        </div>
-    </div>
     <header>
         <div style="display: flex; align-items: center; gap: 12px;">
             <img src="Designer.png" alt="ComandUp Logo">
             <h1>ComandUp</h1>
         </div>
-        <a href="index.html" class="btn">Cerrar Sesión</a>
+        <button onclick="cerrarSesion()" class="btn" style="background: transparent; border: 1px solid white;">Cerrar Sesión</button>
     </header>
 
-    <!-- Contenido del Portal del Cliente -->
     <section style="flex: 1; padding: 60px 8%;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px;">
-            <h2 style="font-size: 32px; color: var(--dark);">Bienvenido, <span id="nombreClienteRestaurante" style="color: var(--primary);">Restaurante "El Fuego"</span></h2>            <span style="background: #e3fcef; color: #006644; padding: 8px 15px; border-radius: 20px; font-weight: 600; font-size: 14px;">
-                <i class="fa-solid fa-check-circle"></i> Suscripción Pro Activa
+            <h2 style="font-size: 32px; color: var(--dark);">Bienvenido, <span id="lblRestaurante" style="color: var(--primary);">Cargando...</span></h2>            
+            <span id="badgeEstado" style="background: #e3fcef; color: #006644; padding: 8px 15px; border-radius: 20px; font-weight: 600; font-size: 14px;">
+                <i class="fa-solid fa-check-circle"></i> Suscripción Activa
             </span>
         </div>
 
         <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 30px;">
-            
-            <!-- Columna Principal: Estado y Seguimiento -->
             <div>
-                <!-- Estado de la Licencia -->
                 <div class="feature-box" style="margin-bottom: 30px; border-left: 5px solid var(--primary);">
                     <h3 style="margin-bottom: 15px;"><i class="fa-solid fa-file-invoice-dollar" style="color: var(--primary);"></i> Detalles de Suscripción</h3>
-                    <p style="color: var(--gray);"><strong>Plan:</strong> ComandUp Pro (Anual)</p>
-                    <p style="color: var(--gray);"><strong>Próxima renovación:</strong> 15 de Enero de 2027</p>
+                    <p style="color: var(--gray);" id="lblPlan"><strong>Plan:</strong> Cargando...</p>
+                    <p style="color: var(--gray);" id="lblVencimiento"><strong>Próxima renovación:</strong> Cargando...</p>
                     <p style="color: var(--gray);"><strong>Servidor Railway:</strong> Protegido y Operativo <i class="fa-solid fa-cloud" style="color: var(--primary);"></i></p>
-                    <a href="#" class="btn btn-primary" style="margin-top: 20px; font-size: 14px;">Descargar Factura Reciente</a>
-                </div>
-
-                <!-- Apartado de Seguimiento: "Novedades y Guías" -->
-                <div class="feature-box">
-                    <h3 style="margin-bottom: 15px;"><i class="fa-solid fa-bullhorn" style="color: var(--primary);"></i> Novedades y Seguimiento Operativo</h3>
-                    <p style="color: var(--gray); margin-bottom: 15px;">Como parte de nuestro compromiso de seguimiento, aquí encontrarás las últimas guías y actualizaciones para maximizar tu rentabilidad.</p>
-                    
-                    <div style="display: flex; gap: 15px; background: #fcfcfc; padding: 15px; border-radius: 8px; border: 1px solid #eee; margin-bottom: 10px;">
-                        <i class="fa-solid fa-book" style="font-size: 24px; color: var(--primary); margin-top: 5px;"></i>
-                        <div>
-                            <h4 style="font-size: 16px;">Nueva Guía: Optimización de Inventario con TakePOS</h4>
-                            <p style="font-size: 13px; color: var(--gray);">Aprende a usar el módulo 86 para reducir mermas en un 20%.</p>
-                            <a href="#" style="font-size: 13px; color: var(--primary); text-decoration: none; font-weight: 600;">Leer Guía →</a>
-                        </div>
-                    </div>
-                    
-                    <div style="display: flex; gap: 15px; background: #fcfcfc; padding: 15px; border-radius: 8px; border: 1px solid #eee;">
-                        <i class="fa-solid fa-shield-virus" style="font-size: 24px; color: var(--primary); margin-top: 5px;"></i>
-                        <div>
-                            <h4 style="font-size: 16px;">Actualización de Seguridad: Módulo Antifraude 2.1</h4>
-                            <p style="font-size: 13px; color: var(--gray);">Mejoras en la detección de descuentos irregulares.</p>
-                            <a href="#" style="font-size: 13px; color: var(--primary); text-decoration: none; font-weight: 600;">Ver Detalles →</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Columna Lateral: Soporte -->
-            <div>
-                <div class="feature-box" style="text-align: center;">
-                    <i class="fa-solid fa-headset" style="font-size: 40px; color: var(--primary); margin-bottom: 15px;"></i>
-                    <h3 style="font-size: 18px; margin-bottom: 10px;">¿Necesitas Ayuda?</h3>
-                    <p style="font-size: 14px; color: var(--gray); margin-bottom: 20px;">Tu plan Pro incluye soporte prioritario 24/7.</p>
-                    <a href="https://wa.me/528341500040" target="_blank" class="btn btn-primary" style="width: 100%; font-size: 14px; background: #25D366; border: none;">
-                        <i class="fa-brands fa-whatsapp"></i> Contactar a Soporte
-                    </a>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Pie de Página -->
-    <footer>
-        <p>&copy; 2026 ComandUp. Universidad Politécnica de Victoria. Todos los derechos reservados.</p>
-    </footer>
-
-</body>
-<!-- Script para cargar el nombre del restaurante desde la memoria -->
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // 1. Buscamos si hay algo guardado en la memoria
-            const restauranteMemoria = localStorage.getItem('restauranteGuardado');
+        // LÓGICA DE SEGURIDAD Y DATOS DINÁMICOS
+        document.addEventListener('DOMContentLoaded', () => {
+            const sesionActiva = localStorage.getItem('usuarioLogueado');
             
-            // 2. Si sí hay algo guardado, reemplazamos el texto
-            if (restauranteMemoria) {
-                document.getElementById('nombreClienteRestaurante').innerText = 'Restaurante "' + restauranteMemoria + '"';
+            // Si no hay sesión, lo expulsamos al login
+            if (!sesionActiva) {
+                window.location.href = 'login.html';
+                return;
             }
+
+            // Si sí hay sesión, parseamos los datos reales del usuario
+            const usuario = JSON.parse(sesionActiva);
+
+            // Inyectamos los datos reales en el HTML
+            document.getElementById('lblRestaurante').innerText = `Restaurante "${usuario.restaurante}"`;
+            document.getElementById('lblPlan').innerHTML = `<strong>Plan Activo:</strong> ComandUp ${usuario.plan}`;
+            
+            // Formatear la fecha (Quitar la T de la zona horaria)
+            const fechaLimpia = usuario.fecha_vencimiento.split('T')[0];
+            document.getElementById('lblVencimiento').innerHTML = `<strong>Próxima renovación:</strong> ${fechaLimpia}`;
         });
+
+        // FUNCIÓN PARA CERRAR SESIÓN
+        function cerrarSesion() {
+            localStorage.removeItem('usuarioLogueado'); // Borramos la memoria
+            window.location.href = 'index.html'; // Lo mandamos al inicio
+        }
     </script>
+</body>
 </html>

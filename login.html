@@ -2,14 +2,12 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Iniciar Sesión | ComandUp</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body style="background: var(--light); display: flex; flex-direction: column; min-height: 100vh;">
 
-    <!-- Navegación -->
     <header>
         <div style="display: flex; align-items: center; gap: 12px;">
             <img src="Designer.png" alt="ComandUp Logo">
@@ -18,71 +16,61 @@
         <a href="index.html" class="btn">Volver al Inicio</a>
     </header>
 
-    <!-- Contenedor del Login -->
     <section style="flex: 1; display: flex; justify-content: center; align-items: center; padding: 20px;">
         <div class="checkout-card" style="max-width: 400px; width: 100%; padding: 40px; text-align: center;">
-            <h2 style="margin-bottom: 25px; color: var(--dark);">Acceso a Clientes</h2>
+            <h2 style="margin-bottom: 10px; color: var(--dark);">Bienvenido de nuevo</h2>
+            <p style="color: var(--gray); margin-bottom: 25px; font-size: 14px;">Ingresa tus credenciales para acceder a tu panel.</p>
             
-            <div class="input-wrapper" style="margin-bottom: 15px;">
-                <i class="fa-regular fa-envelope"></i>
-                <input type="email" id="email" placeholder="Correo electrónico" required>
-            </div>
-            
-            <div class="input-wrapper" style="margin-bottom: 25px;">
-                <i class="fa-solid fa-lock"></i>
-                <input type="password" id="password" placeholder="Contraseña" required>
-            </div>
+            <form id="loginForm">
+                <div class="input-wrapper" style="margin-bottom: 15px;">
+                    <i class="fa-regular fa-envelope"></i>
+                    <input type="email" id="email" placeholder="Correo corporativo" required>
+                </div>
+                
+                <div class="input-wrapper" style="margin-bottom: 25px;">
+                    <i class="fa-solid fa-lock"></i>
+                    <input type="password" id="password" placeholder="Contraseña" required>
+                </div>
 
-            <!-- Botón que dispara la función de JS -->
-            <button onclick="iniciarSesion()" class="btn btn-primary" style="width: 100%; padding: 15px; font-size: 16px;">
-                Iniciar Sesión
-            </button>
+                <button type="submit" class="btn btn-primary" style="width: 100%; padding: 15px; font-size: 16px;">
+                    Iniciar Sesión
+                </button>
+            </form>
+
+            <div style="margin-top: 20px; border-top: 1px solid #eee; padding-top: 20px;">
+                <p style="font-size: 14px; color: var(--gray);">¿No tienes una cuenta?</p>
+                <a href="checkout.html" style="color: var(--primary); font-weight: bold; text-decoration: none;">Adquirir Plan y Registrarse</a>
+            </div>
         </div>
     </section>
 
-    <!-- Pie de Página -->
-    <footer>
-        <p>&copy; 2026 ComandUp. Universidad Politécnica de Victoria. Todos los derechos reservados.</p>
-    </footer>
-
-    <!-- AQUÍ VA TU LÓGICA DE JAVASCRIPT -->
     <script>
-        async function iniciarSesion() {
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault(); // Evita que la página se recargue
+            
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
 
             try {
-                // Asegúrate de que esta sea tu URL de Railway real
+                // REEMPLAZA CON TU ENLACE DE RAILWAY
                 const respuesta = await fetch('https://comandup-webhook-production.up.railway.app/api/login', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email, password })
                 });
 
-                // Si el servidor de Railway está caído o arroja error 500
-                if (!respuesta.ok) {
-                    const errorTexto = await respuesta.text();
-                    throw new Error(`El servidor falló (Error ${respuesta.status}): ${errorTexto.substring(0, 100)}`);
-                }
-
                 const datos = await respuesta.json();
 
                 if (datos.success) {
                     localStorage.setItem('usuarioLogueado', JSON.stringify(datos.usuario));
-                    if (datos.usuario.rol === 'admin') {
-                        window.location.href = 'dashboard_admin.html'; 
-                    } else {
-                        window.location.href = 'client_portal.html'; 
-                    }
+                    window.location.href = datos.usuario.rol === 'admin' ? 'dashboard_admin.html' : 'client_portal.html';
                 } else {
-                    alert("Atención: " + (datos.mensaje || datos.error));
+                    alert("Error: " + datos.mensaje);
                 }
             } catch (error) {
-                // Este es el radar: Nos dirá el problema real
-                alert("Fallo crítico de conexión:\n" + error.message);
-                console.error("Detalle del error:", error);
+                alert("Fallo de conexión al servidor.");
             }
-        }
+        });
     </script>
 </body>
 </html>

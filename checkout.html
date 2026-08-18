@@ -91,63 +91,72 @@
 
     <!-- Scripts de Validación en Tiempo Real -->
     <script>
-        // 1. Evitar que se escriban números o símbolos en el Nombre
-        document.getElementById('cardName').addEventListener('input', function(e) {
+        // Limpieza de campos en tiempo real (Mejorado)
+        document.getElementById('cardName').addEventListener('input', function() {
             this.value = this.value.replace(/[^A-Za-záéíóúÁÉÍÓÚñÑ\s]/g, '');
         });
-
-        // 2. Evitar letras en la Tarjeta
-        document.getElementById('cardNumber').addEventListener('input', function(e) {
-            this.value = this.value.replace(/\D/g, ''); // \D significa "todo lo que no sea número"
+        document.getElementById('cardNumber').addEventListener('input', function() {
+            this.value = this.value.replace(/\D/g, '').substring(0, 16);
+        });
+        document.getElementById('cardCvv').addEventListener('input', function() {
+            this.value = this.value.replace(/\D/g, '').substring(0, 3);
         });
 
-        // 3. Evitar letras en el CVV
-        document.getElementById('cardCvv').addEventListener('input', function(e) {
-            this.value = this.value.replace(/\D/g, '');
-        });
-
-        // 4. Lógica inteligente para la Fecha de Expiración
-        document.getElementById('cardExpiry').addEventListener('input', function(e) {
-            let val = this.value.replace(/\D/g, ''); // Quitar todo lo que no sea número
-            
+        document.getElementById('cardExpiry').addEventListener('input', function() {
+            let val = this.value.replace(/\D/g, ''); 
             if (val.length >= 2) {
-                // Extraer el mes y validar que no sea mayor a 12 ni igual a 00
                 let month = parseInt(val.substring(0, 2));
                 if (month > 12) val = '12' + val.substring(2);
                 if (month === 0) val = '01' + val.substring(2);
-                
-                // Agregar la diagonal automáticamente
                 this.value = val.substring(0, 2) + '/' + val.substring(2, 4);
             } else {
                 this.value = val;
             }
         });
 
-        // 5. Enviar los datos a la Base de Datos de Railway
+        // ENVÍO AL SERVIDOR (REGISTRO)
         document.getElementById('paymentForm').addEventListener('submit', async function(e) {
             e.preventDefault(); 
             
-            // Recolectamos lo que escribió el usuario
+            // Validaciones finales manuales para que el botón no se "congele"
+            if (document.getElementById('cardNumber').value.length !== 16) {
+                alert("El número de tarjeta debe tener 16 dígitos.");
+                return;
+            }
+
             const email = document.getElementById('customerEmail').value;
-            const name = document.getElementById('cardName').value;
             const restaurante = document.getElementById('restauranteName').value;
             const password = document.getElementById('accountPassword').value;
-            const plan = 'Pro'; // Aquí defines el plan que están comprando en esta página
+            const plan = 'Pro'; // Plan por defecto en esta pantalla
 
-            // Cambia el enlace por el de tu proyecto real en Railway
-            const respuesta = await fetch('https://comandup-webhook-production.up.railway.app/api/register', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ restaurante, email, password, plan })
-            });
+            // Mostrar estado de carga (Feedback visual para el usuario)
+            const btnSubmit = document.querySelector('button[type="submit"]');
+            const originalText = btnSubmit.innerHTML;
+            btnSubmit.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Procesando...';
+            btnSubmit.disabled = true;
 
-            const datos = await respuesta.json();
+            try {
+                // REEMPLAZA CON TU ENLACE DE RAILWAY
+                const respuesta = await fetch('https://comandup-webhook-production.up.railway.app/api/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ restaurante, email, password, plan })
+                });
 
-            if (datos.success) {
-                alert(`¡Transacción aprobada, ${name}!\n\nEl restaurante "${restaurante}" ha sido registrado en el sistema.\nYa puedes iniciar sesión en el portal de clientes con tu correo y contraseña.`);
-                window.location.href = "login.html"; // Lo mandamos a que inicie sesión
-            } else {
-                alert("Atención: " + datos.mensaje);
+                const datos = await respuesta.json();
+
+                if (datos.success) {
+                    alert(`¡Transacción aprobada!\n\nEl restaurante "${restaurante}" ha sido registrado. Inicia sesión con tus credenciales.`);
+                    window.location.href = "login.html"; // Lo mandamos a loguearse
+                } else {
+                    alert("No se pudo completar el registro: " + datos.mensaje);
+                }
+            } catch (error) {
+                alert("Fallo de conexión. Intenta de nuevo.");
+            } finally {
+                // Restaurar botón
+                btnSubmit.innerHTML = originalText;
+                btnSubmit.disabled = false;
             }
         });
     </script>

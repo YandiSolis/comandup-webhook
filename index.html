@@ -33,9 +33,7 @@
             <a href="#funciones">Funciones</a>
             <a href="#contacto">Contacto</a>
             <!-- Opción de Mi Cuenta Simulada -->
-            <!-- Opción de Mi Cuenta Simulada -->
-            <a href="login.html" class="client-acc"><i class="fa-solid fa-user-circle"></i> Mi Cuenta</a>            <a href="checkout.html" class="btn btn-primary">Adquirir Licencia</a>
-        </div>
+            <a href="#" onclick="gestionarAcceso(event)" class="client-acc"><i class="fa-solid fa-user-circle"></i> Mi Cuenta</a>        </div>
     </header>
 
     <!-- Hero Section -->
@@ -166,6 +164,25 @@
             // 3. Mostramos la alerta de éxito
             alert("¡Mensaje preparado con éxito! Redirigiendo para completar el envío a ComandUp.");
         });
+    </script>
+    <script>
+        function gestionarAcceso(e) {
+            e.preventDefault();
+            // Revisamos si hay una sesión activa en la memoria
+            const sesionActiva = localStorage.getItem('usuarioLogueado');
+            
+            if (sesionActiva) {
+                const usuario = JSON.parse(sesionActiva);
+                if (usuario.rol === 'admin') {
+                    window.location.href = 'dashboard_admin.html';
+                } else {
+                    window.location.href = 'client_portal.html';
+                }
+            } else {
+                // Si no está logueado, lo mandamos al Login
+                window.location.href = 'login.html';
+            }
+        }
     </script>
 </body>
 </html>
