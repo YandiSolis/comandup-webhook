@@ -7,137 +7,140 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body>
+<body style="background: var(--light, #f4f7f6);">
 
     <header class="animate-fade">
         <div style="display: flex; align-items: center; gap: 12px;">
-            <img src="Designer.png" alt="ComandUp Logo">
+            <img src="Designer.png" alt="ComandUp Logo" style="height: 40px;">
             <h1>ComandUp</h1>
         </div>
         <a href="index.html" class="btn">Cancelar y Volver</a>
     </header>
 
-    <div class="checkout-wrapper animate-up">
-        <div class="checkout-card">
+    <div class="checkout-wrapper animate-up" style="padding: 40px 8%;">
+        <div class="checkout-card" style="display: flex; gap: 30px; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); flex-wrap: wrap;">
+            
             <!-- Columna Izquierda: Resumen -->
-            <div class="checkout-summary">
-                <h3>Resumen del Pedido</h3>
-                <ul>
-                    <li><i class="fa-solid fa-circle-check"></i> Licencia ComandUp Pro</li>
-                    <li><i class="fa-solid fa-circle-check"></i> Alertas antifraude ilimitadas</li>
-                    <li><i class="fa-solid fa-circle-check"></i> Soporte técnico 24/7</li>
-                    <li><i class="fa-solid fa-circle-check"></i> Servidor en la nube dedicado</li>
+            <div class="checkout-summary" style="flex: 1; min-width: 300px; background: #f8f9fa; padding: 25px; border-radius: 8px;">
+                <h3 style="margin-top: 0;"><i class="fa-solid fa-cart-shopping"></i> Resumen del Pedido</h3>
+                <ul style="list-style: none; padding: 0; line-height: 2;">
+                    <li><i class="fa-solid fa-circle-check" style="color: #008f68;"></i> Licencia ComandUp Pro</li>
+                    <li><i class="fa-solid fa-circle-check" style="color: #008f68;"></i> Alertas antifraude ilimitadas</li>
+                    <li><i class="fa-solid fa-circle-check" style="color: #008f68;"></i> Soporte técnico 24/7</li>
+                    <li><i class="fa-solid fa-circle-check" style="color: #008f68;"></i> Panel Multi-Sucursal</li>
                 </ul>
-                <p style="opacity: 0.8;">Suscripción mensual recurrente</p>
-                <div class="total">Total: $999.00 <span style="font-size: 16px;">MXN</span></div>
+                <div style="margin-top: 20px; font-size: 24px; font-weight: bold; color: #333;">Total: $999.00 <span style="font-size: 14px; color: #666;">MXN / mes</span></div>
             </div>
             
-            <!-- Columna Derecha: Formulario con Validaciones -->
-            <div class="checkout-form-container">
-                <h3>Detalles de Facturación</h3>
+            <!-- Columna Derecha: Formulario -->
+            <div class="checkout-form-container" style="flex: 2; min-width: 300px;">
+                <h3 style="margin-top: 0;">Detalles de la Cuenta y Pago</h3>
                 <form id="paymentForm">
-                    <p style="color: #dc3545; font-size: 12px; margin-bottom: 15px; background: #fff3f3; padding: 10px; border-radius: 5px; text-align: center;">
-                        <i class="fa-solid fa-triangle-exclamation"></i> Entorno de prueba. Validaciones de formato activas.
-                    </p>
-
-                    <!-- Campo Restaurante -->
-                    <div class="input-wrapper">
-                        <i class="fa-solid fa-store"></i>
-                        <input type="text" id="restauranteName" placeholder="Nombre de tu Restaurante" required>
-                    </div>
-
-                    <!-- Campo Contraseña para su nueva cuenta -->
-                    <div class="input-wrapper">
-                        <i class="fa-solid fa-key"></i>
-                        <input type="password" id="accountPassword" placeholder="Crea una contraseña para el portal" required minlength="6">
-                    </div>
                     
-                    <!-- Campo Nombre (Solo letras y espacios) -->
-                    <div class="input-wrapper">
-                        <i class="fa-regular fa-user"></i>
-                        <input type="text" id="cardName" placeholder="Nombre del titular" required pattern="[A-Za-záéíóúÁÉÍÓÚñÑ\s]+" title="Solo se permiten letras y espacios">
-                    </div>
-                    
-                    <!-- Campo Tarjeta (Solo 16 números) -->
-                    <div class="input-wrapper">
-                        <i class="fa-regular fa-credit-card"></i>
-                        <input type="text" id="cardNumber" placeholder="Número de Tarjeta (16 dígitos sin espacios)" maxlength="16" required pattern="\d{16}" title="Debe contener exactamente 16 números">
-                    </div>
-                    
-                    <div style="display: flex; gap: 15px;">
-                        <!-- Campo Expiración (Mes válido + Año) -->
-                        <div class="input-wrapper" style="flex: 1;">
-                            <i class="fa-regular fa-calendar"></i>
-                            <input type="text" id="cardExpiry" placeholder="MM/AA" maxlength="5" required pattern="(0[1-9]|1[0-2])\/\d{2}" title="Formato válido: MM/AA (ej. 12/28)">
+                    <!-- Datos de la cuenta SaaS -->
+                    <div style="margin-bottom: 20px;">
+                        <h4 style="margin-bottom: 10px; color: #666; font-size: 14px;">1. Crea tu cuenta</h4>
+                        
+                        <div class="input-wrapper" style="margin-bottom: 10px;">
+                            <i class="fa-solid fa-store"></i>
+                            <input type="text" id="restauranteName" placeholder="Nombre de tu Restaurante" required style="width: 100%; padding: 10px 10px 10px 35px; border: 1px solid #ddd; border-radius: 5px;">
                         </div>
-                        <!-- Campo CVV (Solo 3 números) -->
-                        <div class="input-wrapper" style="flex: 1;">
-                            <i class="fa-solid fa-lock"></i>
-                            <input type="password" id="cardCvv" placeholder="CVV" maxlength="3" required pattern="\d{3}" title="Debe contener exactamente 3 números">
+
+                        <div class="input-wrapper" style="margin-bottom: 10px;">
+                            <i class="fa-regular fa-envelope"></i>
+                            <input type="email" id="customerEmail" placeholder="Correo electrónico corporativo" required style="width: 100%; padding: 10px 10px 10px 35px; border: 1px solid #ddd; border-radius: 5px;">
+                        </div>
+
+                        <div class="input-wrapper" style="margin-bottom: 10px;">
+                            <i class="fa-solid fa-key"></i>
+                            <input type="password" id="accountPassword" placeholder="Crea una contraseña (mínimo 6 caracteres)" required minlength="6" style="width: 100%; padding: 10px 10px 10px 35px; border: 1px solid #ddd; border-radius: 5px;">
                         </div>
                     </div>
+
+                    <!-- Datos de Pago Simulados -->
+                    <div>
+                        <h4 style="margin-bottom: 10px; color: #666; font-size: 14px;">2. Método de Pago Seguro</h4>
+                        
+                        <div class="input-wrapper" style="margin-bottom: 10px;">
+                            <i class="fa-regular fa-user"></i>
+                            <input type="text" id="cardName" placeholder="Nombre del titular de la tarjeta" required style="width: 100%; padding: 10px 10px 10px 35px; border: 1px solid #ddd; border-radius: 5px;">
+                        </div>
+                        
+                        <div class="input-wrapper" style="margin-bottom: 10px;">
+                            <i class="fa-regular fa-credit-card"></i>
+                            <!-- Le quitamos el pattern para que no haya bloqueos fantasma -->
+                            <input type="text" id="cardNumber" placeholder="Número de Tarjeta (16 dígitos)" maxlength="16" required style="width: 100%; padding: 10px 10px 10px 35px; border: 1px solid #ddd; border-radius: 5px;">
+                        </div>
+                        
+                        <div style="display: flex; gap: 15px; margin-bottom: 15px;">
+                            <div class="input-wrapper" style="flex: 1;">
+                                <i class="fa-regular fa-calendar"></i>
+                                <input type="text" id="cardExpiry" placeholder="MM/AA" maxlength="5" required style="width: 100%; padding: 10px 10px 10px 35px; border: 1px solid #ddd; border-radius: 5px;">
+                            </div>
+                            <div class="input-wrapper" style="flex: 1;">
+                                <i class="fa-solid fa-lock"></i>
+                                <input type="password" id="cardCvv" placeholder="CVV" maxlength="3" required style="width: 100%; padding: 10px 10px 10px 35px; border: 1px solid #ddd; border-radius: 5px;">
+                            </div>
+                        </div>
+                    </div>
                     
-                    <button type="submit" class="btn btn-primary" style="width: 100%; font-size: 16px; padding: 15px; margin-top: 10px;">
-                        <i class="fa-solid fa-shield-halved"></i> Procesar Pago Seguro
+                    <button id="btnSubmit" type="submit" class="btn btn-primary" style="width: 100%; font-size: 16px; padding: 15px; margin-top: 10px; background: #008f68; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">
+                        <i class="fa-solid fa-shield-halved"></i> Procesar Pago y Crear Cuenta
                     </button>
-                    
-                    <div class="trust-badge">
-                        <i class="fa-solid fa-lock"></i> Pago cifrado con seguridad SSL de 256 bits
-                    </div>
                 </form>
             </div>
         </div>
     </div>
 
-    <!-- Scripts de Validación en Tiempo Real -->
     <script>
-        // Limpieza de campos en tiempo real (Mejorado)
-        document.getElementById('cardName').addEventListener('input', function() {
-            this.value = this.value.replace(/[^A-Za-záéíóúÁÉÍÓÚñÑ\s]/g, '');
-        });
+        // Formateo visual (Solo para que se vea bonito mientras escriben)
         document.getElementById('cardNumber').addEventListener('input', function() {
             this.value = this.value.replace(/\D/g, '').substring(0, 16);
         });
         document.getElementById('cardCvv').addEventListener('input', function() {
             this.value = this.value.replace(/\D/g, '').substring(0, 3);
         });
-
         document.getElementById('cardExpiry').addEventListener('input', function() {
             let val = this.value.replace(/\D/g, ''); 
             if (val.length >= 2) {
                 let month = parseInt(val.substring(0, 2));
-                if (month > 12) val = '12' + val.substring(2);
-                if (month === 0) val = '01' + val.substring(2);
+                if (month > 12) val = '12';
+                if (month === 0) val = '01';
                 this.value = val.substring(0, 2) + '/' + val.substring(2, 4);
             } else {
                 this.value = val;
             }
         });
 
-        // ENVÍO AL SERVIDOR (REGISTRO)
+        // ENVÍO AL SERVIDOR
         document.getElementById('paymentForm').addEventListener('submit', async function(e) {
-            e.preventDefault(); 
+            e.preventDefault(); // Evitamos que la página se recargue por error
             
-            // Validaciones finales manuales para que el botón no se "congele"
-            if (document.getElementById('cardNumber').value.length !== 16) {
-                alert("El número de tarjeta debe tener 16 dígitos.");
+            const btnSubmit = document.getElementById('btnSubmit');
+            const cardNumber = document.getElementById('cardNumber').value;
+            
+            // 1. Validación manual inteligente con alerta visible
+            if (cardNumber.length < 16) {
+                alert("Por favor, ingresa los 16 números de tu tarjeta.");
                 return;
             }
 
-            const email = document.getElementById('customerEmail').value;
+            // 2. Extraer los datos reales para la base de datos
             const restaurante = document.getElementById('restauranteName').value;
+            const email = document.getElementById('customerEmail').value;
             const password = document.getElementById('accountPassword').value;
-            const plan = 'Pro'; // Plan por defecto en esta pantalla
+            const plan = 'Pro';
 
-            // Mostrar estado de carga (Feedback visual para el usuario)
-            const btnSubmit = document.querySelector('button[type="submit"]');
+            // 3. Efecto de carga en el botón
             const originalText = btnSubmit.innerHTML;
-            btnSubmit.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Procesando...';
+            btnSubmit.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Registrando sistema...';
             btnSubmit.disabled = true;
 
             try {
-                // REEMPLAZA CON TU ENLACE DE RAILWAY
-                const respuesta = await fetch('https://comandup-webhook-production.up.railway.app/api/register', {
+                // REEMPLAZA ESTO CON LA URL EXACTA DE TU PROYECTO EN RAILWAY
+                const urlRailway = 'https://comandup-webhook-production.up.railway.app/api/register';
+                
+                const respuesta = await fetch(urlRailway, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ restaurante, email, password, plan })
@@ -146,15 +149,17 @@
                 const datos = await respuesta.json();
 
                 if (datos.success) {
-                    alert(`¡Transacción aprobada!\n\nEl restaurante "${restaurante}" ha sido registrado. Inicia sesión con tus credenciales.`);
-                    window.location.href = "login.html"; // Lo mandamos a loguearse
+                    alert(`¡Transacción Exitosa!\n\nEl sistema para "${restaurante}" ha sido creado.\nHemos enviado tu factura a ${email}.\n\nDa clic en aceptar para iniciar sesión.`);
+                    window.location.href = "login.html"; // Manda a iniciar sesión
                 } else {
-                    alert("No se pudo completar el registro: " + datos.mensaje);
+                    // Si el correo ya existe, por ejemplo.
+                    alert("No pudimos crear la cuenta: " + datos.mensaje);
                 }
             } catch (error) {
-                alert("Fallo de conexión. Intenta de nuevo.");
+                alert("Ocurrió un error al intentar conectarse al servidor en la nube. Revisa tu conexión.");
+                console.error("Error en Fetch:", error);
             } finally {
-                // Restaurar botón
+                // Restauramos el botón
                 btnSubmit.innerHTML = originalText;
                 btnSubmit.disabled = false;
             }
