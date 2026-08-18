@@ -2,12 +2,67 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Panel de SuperAdmin | ComandUp</title>
+    <title>Panel Administrativo | ComandUp SaaS</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body style="padding: 50px; text-align: center;">
-    <h1>Bienvenido al Panel de Control de ComandUp</h1>
-    <p>Aquí pondremos la lista de todos los restaurantes y las gráficas.</p>
-    <a href="index.html" class="btn btn-primary">Cerrar Sesión</a>
+<body style="background: var(--light); display: flex; flex-direction: column; min-height: 100vh;">
+
+    <!-- Barra de Navegación del Admin -->
+    <header>
+        <div style="display: flex; align-items: center; gap: 12px;">
+            <img src="Designer.png" alt="ComandUp Logo">
+            <h1>ComandUp | Control SaaS</h1>
+        </div>
+        <!-- ESTE BOTÓN AHORA SÍ DISPARA LA FUNCIÓN QUE BORRA LA MEMORIA -->
+        <button onclick="cerrarSesion()" class="btn" style="background: transparent; border: 1px solid white; cursor: pointer;">
+            Cerrar Sesión
+        </button>
+    </header>
+
+    <!-- Panel de Control -->
+    <section style="flex: 1; padding: 60px 8%;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px;">
+            <h2 style="font-size: 32px; color: var(--dark);">Panel de Control Global</h2>
+            <span style="background: #2b3a4a; color: #fff; padding: 8px 15px; border-radius: 20px; font-weight: 600; font-size: 14px;">
+                <i class="fa-solid fa-shield-halved"></i> SuperAdministrador
+            </span>
+        </div>
+
+        <div class="feature-box" style="margin-bottom: 30px; border-left: 5px solid #2b3a4a;">
+            <h3 style="margin-bottom: 15px;"><i class="fa-solid fa-users-gear" style="color: #2b3a4a;"></i> Portafolio de Clientes</h3>
+            <p style="color: var(--gray);">Aquí visualizaremos el Business Intelligence de las cuentas registradas y el estatus de sus servidores en Railway.</p>
+            
+            <div style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 8px;">
+                <p><strong><i class="fa-solid fa-server"></i> Estado General:</strong> 100% Operativo</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Lógica de Seguridad y Cierre de Sesión -->
+    <script>
+        // 1. EL CADENERO: Verifica que nadie entre aquí si no es el Admin
+        document.addEventListener('DOMContentLoaded', () => {
+            const sesionActiva = localStorage.getItem('usuarioLogueado');
+            
+            if (!sesionActiva) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            const usuario = JSON.parse(sesionActiva);
+            
+            // Si un cliente intenta entrar escribiendo la URL, lo regresamos a su portal
+            if (usuario.rol !== 'admin') {
+                window.location.href = 'client_portal.html'; 
+            }
+        });
+
+        // 2. EL BORRADOR DE MEMORIA (La solución a tu problema)
+        function cerrarSesion() {
+            localStorage.removeItem('usuarioLogueado'); // ¡Destruye la memoria de la sesión!
+            window.location.href = 'index.html'; // Te regresa al inicio como un usuario nuevo
+        }
+    </script>
 </body>
 </html>
