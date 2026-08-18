@@ -40,10 +40,16 @@
                         <i class="fa-solid fa-triangle-exclamation"></i> Entorno de prueba. Validaciones de formato activas.
                     </p>
 
-                    <!-- Campo de Correo Nuevo -->
+                    <!-- Campo Restaurante -->
                     <div class="input-wrapper">
-                        <i class="fa-regular fa-envelope"></i>
-                        <input type="email" id="customerEmail" placeholder="Correo electrónico para recibir factura" required>
+                        <i class="fa-solid fa-store"></i>
+                        <input type="text" id="restauranteName" placeholder="Nombre de tu Restaurante" required>
+                    </div>
+
+                    <!-- Campo Contraseña para su nueva cuenta -->
+                    <div class="input-wrapper">
+                        <i class="fa-solid fa-key"></i>
+                        <input type="password" id="accountPassword" placeholder="Crea una contraseña para el portal" required minlength="6">
                     </div>
                     
                     <!-- Campo Nombre (Solo letras y espacios) -->
@@ -117,15 +123,32 @@
             }
         });
 
-        // 5. Simulación de envío exitoso y notificación al correo
-        document.getElementById('paymentForm').addEventListener('submit', function(e) {
+        // 5. Enviar los datos a la Base de Datos de Railway
+        document.getElementById('paymentForm').addEventListener('submit', async function(e) {
             e.preventDefault(); 
+            
+            // Recolectamos lo que escribió el usuario
             const email = document.getElementById('customerEmail').value;
             const name = document.getElementById('cardName').value;
-            
-            alert(`¡Transacción aprobada, ${name}!\n\nSe ha enviado la factura correspondiente y los accesos de la plataforma a tu correo:\n${email}\n\nBienvenido a la red de ComandUp.`);
-            
-            window.location.href = "index.html"; 
+            const restaurante = document.getElementById('restauranteName').value;
+            const password = document.getElementById('accountPassword').value;
+            const plan = 'Pro'; // Aquí defines el plan que están comprando en esta página
+
+            // Cambia el enlace por el de tu proyecto real en Railway
+            const respuesta = await fetch('https://tu-proyecto-railway.app/api/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ restaurante, email, password, plan })
+            });
+
+            const datos = await respuesta.json();
+
+            if (datos.success) {
+                alert(`¡Transacción aprobada, ${name}!\n\nEl restaurante "${restaurante}" ha sido registrado en el sistema.\nYa puedes iniciar sesión en el portal de clientes con tu correo y contraseña.`);
+                window.location.href = "login.html"; // Lo mandamos a que inicie sesión
+            } else {
+                alert("Atención: " + datos.mensaje);
+            }
         });
     </script>
 </body>

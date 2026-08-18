@@ -160,18 +160,31 @@ const dbPool = mysql.createPool({
 });
 
 // ==========================================
-// RUTA DE LOGIN (Para Admin y Clientes)
+// RUTA DE CHECKOUT (Crear nuevo cliente tras pagar)
 // ==========================================
-app.post('/api/login', async (req, res) => {
-    const { email, password } = req.body;
+app.post('/api/register', async (req, res) => {
+    const { restaurante, email, password, plan } = req.body;
+    
+    // El sistema calcula las fechas automáticamente (1 año de plan)
+    const fechaInicio = new Date().toISOString().split('T')[0]; // Día de hoy
+    const fechaVencObj = new Date();
+    fechaVencObj.setFullYear(fechaVencObj.getFullYear() + 1);
+    const fechaVencimiento = fechaVencObj.toISOString().split('T')[0]; // Hoy, pero del próximo año
+
     try {
-        const [rows] = await dbPool.query('SELECT id, restaurante, rol, plan, fecha_vencimiento, estado FROM usuarios_saas WHERE email = ? AND password = ?', [email, password]);
-        
-        if (rows.length > 0) {
-            res.json({ success: true, usuario: rows[0] });
-        } else {
-            res.status(401).json({ success: false, mensaje: 'Credenciales incorrectas' });
+        // 1. Revisamos que el correo no esté repetido
+        const [existentes] = await dbPool.query('SELECT id FROM usuarios_saas WHERE email = ?', [email]);
+        if (existentes.length > 0) {
+            return res.status(400).json({ success: false, mensaje: 'Este correo ya tiene una cuenta activa.' });
         }
+
+        // 2. Insertamos al cliente en la Base de Datos
+        await dbPool.query(
+            'INSERT INTO usuarios_saas (restaurante, email, password, rol, plan, fecha_inicio, fecha_vencimiento, estado) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+            [restaurante, email, password, 'cliente', plan, fechaInicio, fechaVencimiento, 'Activo']
+        );
+        
+        res.json({ success: true, mensaje: 'Pago procesado y cuenta creada.' });
     } catch (error) {
         res.status(500).json({ success: false, error: error.message });
     }
