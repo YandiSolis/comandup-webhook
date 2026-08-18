@@ -150,13 +150,13 @@ const mysql = require('mysql2/promise');
 // Permitir peticiones desde tu página en GitHub Pages
 app.use(cors()); 
 
-// Conexión a la BD de Railway (llena estos datos con los que te da Railway)
+// Conexión a la BD de Railway (Soporta formato con y sin guión bajo)
 const dbPool = mysql.createPool({
-    host: process.env.MYSQL_HOST,
-    user: process.env.MYSQL_USER,
-    password: process.env.MYSQL_PASSWORD,
-    database: process.env.MYSQL_DATABASE,
-    port: process.env.MYSQL_PORT
+    host: process.env.MYSQLHOST || process.env.MYSQL_HOST,
+    user: process.env.MYSQLUSER || process.env.MYSQL_USER,
+    password: process.env.MYSQLPASSWORD || process.env.MYSQL_PASSWORD,
+    database: process.env.MYSQLDATABASE || process.env.MYSQL_DATABASE,
+    port: process.env.MYSQLPORT || process.env.MYSQL_PORT
 });
 
 // ==========================================

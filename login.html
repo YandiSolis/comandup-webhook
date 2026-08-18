@@ -66,14 +66,13 @@
 
                 // El "Árbitro" de vistas
                 if (datos.usuario.rol === 'admin') {
-                    // Si eres tú (SuperAdmin), te manda al panel de control
                     window.location.href = 'dashboard_admin.html'; 
                 } else {
-                    // Si es un cliente, lo manda al portal que ya tienes creado
                     window.location.href = 'client_portal.html'; 
                 }
             } else {
-                alert("Usuario o contraseña incorrectos");
+                // Ahora sí te dirá el error real (Ej. "Credenciales incorrectas" o "Access denied for user...")
+                alert("Error: " + (datos.mensaje || datos.error || "No se pudo conectar al servidor"));
             }
         }
     </script>
