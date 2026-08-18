@@ -5,34 +5,125 @@
     <title>Portal del Cliente | ComandUp</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Estilos específicos para que el panel se vea tupido y estructurado */
+        .dashboard-grid { 
+            display: grid; 
+            grid-template-columns: 2fr 1fr; 
+            gap: 30px; 
+            margin-top: 20px;
+        }
+        @media (max-width: 768px) { 
+            .dashboard-grid { grid-template-columns: 1fr; } 
+        }
+        .panel-card {
+            background: white; 
+            padding: 25px; 
+            border-radius: 10px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            margin-bottom: 25px;
+        }
+        .support-card { 
+            text-align: center; 
+            padding: 30px; 
+            background: white; 
+            border-radius: 10px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05); 
+        }
+        .guide-item { 
+            display: flex; 
+            gap: 15px; 
+            background: #f8f9fa; 
+            padding: 15px; 
+            border-radius: 8px; 
+            margin-bottom: 15px; 
+            align-items: flex-start;
+            border: 1px solid #eee;
+        }
+    </style>
 </head>
-<body style="background: var(--light); display: flex; flex-direction: column; min-height: 100vh;">
+<body style="background: var(--light, #f4f7f6); display: flex; flex-direction: column; min-height: 100vh;">
 
-    <header>
+    <!-- Barra de Navegación del Panel -->
+    <header style="padding: 15px 8%; background: white; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
         <div style="display: flex; align-items: center; gap: 12px;">
-            <img src="Designer.png" alt="ComandUp Logo">
-            <h1>ComandUp</h1>
+            <img src="Designer.png" alt="ComandUp Logo" style="height: 40px;">
+            <h1 style="color: var(--primary, #008f68); margin: 0; font-size: 24px;">ComandUp</h1>
         </div>
-        <button onclick="cerrarSesion()" class="btn" style="background: transparent; border: 1px solid white;">Cerrar Sesión</button>
+        
+        <!-- Botón de Cerrar Sesión Destacado -->
+        <button onclick="cerrarSesion()" class="btn" style="background: #dc3545; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: bold;">
+            <i class="fa-solid fa-right-from-bracket"></i> Cerrar Sesión
+        </button>
     </header>
 
-    <section style="flex: 1; padding: 60px 8%;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px;">
-            <h2 style="font-size: 32px; color: var(--dark);">Bienvenido, <span id="lblRestaurante" style="color: var(--primary);">Cargando...</span></h2>            
+    <!-- Contenido Principal -->
+    <section style="flex: 1; padding: 40px 8%;">
+        
+        <!-- Cabecera de Bienvenida -->
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 20px;">
+            <h2 style="font-size: 32px; color: #333; margin: 0;">Bienvenido, <span id="lblRestaurante" style="color: var(--primary, #008f68);">Cargando...</span></h2>            
             <span id="badgeEstado" style="background: #e3fcef; color: #006644; padding: 8px 15px; border-radius: 20px; font-weight: 600; font-size: 14px;">
                 <i class="fa-solid fa-check-circle"></i> Suscripción Activa
             </span>
         </div>
 
-        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 30px;">
+        <div class="dashboard-grid">
+            
+            <!-- Columna Izquierda: Información Operativa -->
             <div>
-                <div class="feature-box" style="margin-bottom: 30px; border-left: 5px solid var(--primary);">
-                    <h3 style="margin-bottom: 15px;"><i class="fa-solid fa-file-invoice-dollar" style="color: var(--primary);"></i> Detalles de Suscripción</h3>
-                    <p style="color: var(--gray);" id="lblPlan"><strong>Plan:</strong> Cargando...</p>
-                    <p style="color: var(--gray);" id="lblVencimiento"><strong>Próxima renovación:</strong> Cargando...</p>
-                    <p style="color: var(--gray);"><strong>Servidor Railway:</strong> Protegido y Operativo <i class="fa-solid fa-cloud" style="color: var(--primary);"></i></p>
+                <!-- Tarjeta de Suscripción -->
+                <div class="panel-card" style="border-left: 5px solid var(--primary, #008f68);">
+                    <h3 style="margin-top: 0; margin-bottom: 15px;"><i class="fa-solid fa-file-invoice-dollar" style="color: var(--primary, #008f68);"></i> Detalles de Suscripción</h3>
+                    <p style="color: #666; font-size: 16px;" id="lblPlan"><strong>Plan:</strong> Cargando...</p>
+                    <p style="color: #666; font-size: 16px;" id="lblVencimiento"><strong>Próxima renovación:</strong> Cargando...</p>
+                    <p style="color: #666; font-size: 16px; margin-bottom: 0;"><strong>Servidor Railway:</strong> Protegido y Operativo <i class="fa-solid fa-cloud" style="color: var(--primary, #008f68);"></i></p>
+                </div>
+
+                <!-- Tarjeta de Guías y Novedades -->
+                <div class="panel-card">
+                    <h3 style="margin-top: 0; margin-bottom: 20px;"><i class="fa-solid fa-bullhorn" style="color: var(--primary, #008f68);"></i> Novedades y Guías Operativas</h3>
+                    
+                    <div class="guide-item">
+                        <i class="fa-solid fa-book" style="font-size: 24px; color: var(--primary, #008f68);"></i>
+                        <div>
+                            <h4 style="margin: 0 0 5px 0; font-size: 16px; color: #333;">Optimización de Inventario (Módulo 86)</h4>
+                            <p style="margin: 0 0 10px 0; font-size: 14px; color: #666;">Aprende cómo usar la Alerta 86 en TakePOS para reducir mermas y mejorar la comunicación con la cocina al instante.</p>
+                            <a href="#" style="font-size: 14px; color: var(--primary, #008f68); text-decoration: none; font-weight: bold;">Leer Guía Completa →</a>
+                        </div>
+                    </div>
+
+                    <div class="guide-item">
+                        <i class="fa-solid fa-shield-halved" style="font-size: 24px; color: var(--primary, #008f68);"></i>
+                        <div>
+                            <h4 style="margin: 0 0 5px 0; font-size: 16px; color: #333;">Auditoría de Cancelaciones</h4>
+                            <p style="margin: 0 0 10px 0; font-size: 14px; color: #666;">Descubre cómo rastrear notas de crédito y descuentos altos utilizando el comando <b>!reporte</b> en WhatsApp.</p>
+                            <a href="#" style="font-size: 14px; color: var(--primary, #008f68); text-decoration: none; font-weight: bold;">Ver Tutorial →</a>
+                        </div>
+                    </div>
                 </div>
             </div>
+
+            <!-- Columna Derecha: Soporte y Contacto -->
+            <div>
+                <!-- Tarjeta de WhatsApp -->
+                <div class="support-card">
+                    <i class="fa-brands fa-whatsapp" style="font-size: 48px; color: #25D366; margin-bottom: 15px;"></i>
+                    <h3 style="margin-top: 0; margin-bottom: 10px; color: #333;">Soporte Técnico 24/7</h3>
+                    <p style="color: #666; font-size: 14px; margin-bottom: 20px;">Como cliente con suscripción activa, tienes línea directa con nuestros ingenieros para cualquier eventualidad.</p>
+                    <a href="https://wa.me/528341500040" target="_blank" style="display: block; background: #25D366; color: white; padding: 12px; border-radius: 5px; text-decoration: none; font-weight: bold;">
+                        <i class="fa-solid fa-paper-plane"></i> Contactar por WhatsApp
+                    </a>
+                </div>
+                
+                <!-- Tarjeta de Ejecutivo de Cuenta -->
+                <div class="support-card" style="margin-top: 25px; padding: 20px;">
+                    <i class="fa-solid fa-user-tie" style="font-size: 32px; color: #2b3a4a; margin-bottom: 10px;"></i>
+                    <h4 style="margin: 0 0 5px 0; color: #333;">Tu Ejecutivo de Cuenta</h4>
+                    <p style="margin: 0; color: #666; font-size: 14px;">Ing. Alberto Villanueva<br>soporte@comandup.com</p>
+                </div>
+            </div>
+
         </div>
     </section>
 
@@ -41,28 +132,26 @@
         document.addEventListener('DOMContentLoaded', () => {
             const sesionActiva = localStorage.getItem('usuarioLogueado');
             
-            // Si no hay sesión, lo expulsamos al login
+            // Si intenta entrar sin sesión, lo expulsamos al login
             if (!sesionActiva) {
                 window.location.href = 'login.html';
                 return;
             }
 
-            // Si sí hay sesión, parseamos los datos reales del usuario
+            // Inyectar datos reales de la base de datos
             const usuario = JSON.parse(sesionActiva);
-
-            // Inyectamos los datos reales en el HTML
             document.getElementById('lblRestaurante').innerText = `Restaurante "${usuario.restaurante}"`;
             document.getElementById('lblPlan').innerHTML = `<strong>Plan Activo:</strong> ComandUp ${usuario.plan}`;
             
-            // Formatear la fecha (Quitar la T de la zona horaria)
+            // Formatear la fecha para que se vea limpia
             const fechaLimpia = usuario.fecha_vencimiento.split('T')[0];
             document.getElementById('lblVencimiento').innerHTML = `<strong>Próxima renovación:</strong> ${fechaLimpia}`;
         });
 
         // FUNCIÓN PARA CERRAR SESIÓN
         function cerrarSesion() {
-            localStorage.removeItem('usuarioLogueado'); // Borramos la memoria
-            window.location.href = 'index.html'; // Lo mandamos al inicio
+            localStorage.removeItem('usuarioLogueado'); // Destruye la memoria
+            window.location.href = 'index.html'; // Redirige al inicio
         }
     </script>
 </body>
