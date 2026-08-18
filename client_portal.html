@@ -51,10 +51,15 @@
             <h1 style="color: var(--primary, #008f68); margin: 0; font-size: 24px;">ComandUp</h1>
         </div>
         
-        <!-- Botón de Cerrar Sesión Destacado -->
-        <button onclick="cerrarSesion()" class="btn" style="background: #dc3545; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: bold;">
-            <i class="fa-solid fa-right-from-bracket"></i> Cerrar Sesión
-        </button>
+        <!-- Controles de Usuario -->
+        <div style="display: flex; gap: 10px;">
+            <a href="index.html" class="btn" style="background: #f8f9fa; color: #333; border: 1px solid #ddd; text-decoration: none; padding: 10px 20px; border-radius: 5px; font-weight: bold;">
+                <i class="fa-solid fa-house"></i> Inicio
+            </a>
+            <button onclick="cerrarSesion()" class="btn" style="background: #dc3545; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: bold;">
+                <i class="fa-solid fa-right-from-bracket"></i> Salir
+            </button>
+        </div>
     </header>
 
     <!-- Contenido Principal -->

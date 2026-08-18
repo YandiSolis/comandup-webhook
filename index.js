@@ -47,14 +47,21 @@ app.post('/api/login', async (req, res) => {
     }
 });
 
-// --- RUTA DE REGISTRO (CHECKOUT) ---
+// --- RUTA DE REGISTRO (CHECKOUT MULTI-PLAN) ---
 app.post('/api/register', async (req, res) => {
     const { restaurante, email, password, plan } = req.body;
     
-    // Calcula 1 año a partir de hoy
-    const fechaInicio = new Date().toISOString().split('T')[0]; 
+    // El sistema calcula las fechas automáticamente
+    const fechaInicioObj = new Date();
+    const fechaInicio = fechaInicioObj.toISOString().split('T')[0]; // Hoy
+    
     const fechaVencObj = new Date();
-    fechaVencObj.setFullYear(fechaVencObj.getFullYear() + 1);
+    // TRUCO: Si es plan Pro, sumamos 1 año. Si no, sumamos 1 mes.
+    if (plan === 'Pro') {
+        fechaVencObj.setFullYear(fechaVencObj.getFullYear() + 1);
+    } else {
+        fechaVencObj.setMonth(fechaVencObj.getMonth() + 1);
+    }
     const fechaVencimiento = fechaVencObj.toISOString().split('T')[0]; 
 
     try {
