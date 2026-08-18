@@ -1,9 +1,25 @@
 const express = require('express');
 const axios = require('axios');
 const cron = require('node-cron');
+const cors = require('cors');
+const mysql = require('mysql2/promise');
+
 const app = express();
 
+// ==========================================
+// CONFIGURACIÓN INICIAL
+// ==========================================
 app.use(express.json());
+app.use(cors()); // Permite que GitHub Pages hable con este servidor
+
+// Conexión a la BD de Railway (Soporta formato con y sin guión bajo)
+const dbPool = mysql.createPool({
+    host: process.env.MYSQLHOST || process.env.MYSQL_HOST,
+    user: process.env.MYSQLUSER || process.env.MYSQL_USER,
+    password: process.env.MYSQLPASSWORD || process.env.MYSQL_PASSWORD,
+    database: process.env.MYSQLDATABASE || process.env.MYSQL_DATABASE,
+    port: process.env.MYSQLPORT || process.env.MYSQL_PORT
+});
 
 // ==========================================
 // MEMORIA DEL TURNO (Alcancía virtual)
@@ -12,8 +28,66 @@ let ventasDelDia = 0;
 let ticketsAtendidos = 0;
 
 // ==========================================
-// 1. OÍDO PARA DOLIBARR (Alertas y sumas)
+// 1. RUTAS DE LA APLICACIÓN WEB (SaaS)
 // ==========================================
+
+// --- RUTA DE LOGIN ---
+app.post('/api/login', async (req, res) => {
+    const { email, password } = req.body;
+    try {
+        const [rows] = await dbPool.query('SELECT id, restaurante, rol, plan, fecha_vencimiento, estado FROM usuarios_saas WHERE email = ? AND password = ?', [email, password]);
+        
+        if (rows.length > 0) {
+            res.json({ success: true, usuario: rows[0] });
+        } else {
+            res.status(401).json({ success: false, mensaje: 'Credenciales incorrectas' });
+        }
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+// --- RUTA DE REGISTRO (CHECKOUT) ---
+app.post('/api/register', async (req, res) => {
+    const { restaurante, email, password, plan } = req.body;
+    
+    // Calcula 1 año a partir de hoy
+    const fechaInicio = new Date().toISOString().split('T')[0]; 
+    const fechaVencObj = new Date();
+    fechaVencObj.setFullYear(fechaVencObj.getFullYear() + 1);
+    const fechaVencimiento = fechaVencObj.toISOString().split('T')[0]; 
+
+    try {
+        const [existentes] = await dbPool.query('SELECT id FROM usuarios_saas WHERE email = ?', [email]);
+        if (existentes.length > 0) {
+            return res.status(400).json({ success: false, mensaje: 'Este correo ya tiene una cuenta activa.' });
+        }
+
+        await dbPool.query(
+            'INSERT INTO usuarios_saas (restaurante, email, password, rol, plan, fecha_inicio, fecha_vencimiento, estado) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+            [restaurante, email, password, 'cliente', plan, fechaInicio, fechaVencimiento, 'Activo']
+        );
+        
+        res.json({ success: true, mensaje: 'Pago procesado y cuenta creada.' });
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+// --- RUTA PARA VER CLIENTES (ADMIN) ---
+app.get('/api/clientes', async (req, res) => {
+    try {
+        const [rows] = await dbPool.query('SELECT * FROM usuarios_saas WHERE rol = "cliente"');
+        res.json({ success: true, clientes: rows });
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+// ==========================================
+// 2. OÍDO PARA DOLIBARR Y GREENAPI (Webhooks)
+// ==========================================
+
 app.post('/webhook/alertas', async (req, res) => {
     const datos = req.body;
     console.log("📥 ¡Evento detectado por ComandUp! Código:", datos.triggercode);
@@ -48,7 +122,6 @@ app.post('/webhook/alertas', async (req, res) => {
         const producto = datos.object;
         const urlGreenAPI = `https://7107.api.greenapi.com/waInstance${process.env.ID_INSTANCE}/sendMessage/${process.env.API_TOKEN_INSTANCE}`;
 
-        // CUANDO SE ACABA EL PRODUCTO (Estado 0)
         if (producto.status == 0) {
             const msjAgotado = `🛑 *ALERTA COMANDUP: PRODUCTO AGOTADO (86)* 🛑\nEl platillo *${producto.label}* está FUERA DE VENTA. No lo ofrezcan hasta nuevo aviso.`;
             try {
@@ -58,7 +131,6 @@ app.post('/webhook/alertas', async (req, res) => {
                 }
             } catch (error) { console.error("❌ Error enviando 86:", error.message); }
         } 
-        // CUANDO REGRESA A LA VENTA (Estado 1)
         else if (producto.status == 1) {
             const msjDisponible = `✅ *ALERTA COMANDUP: PRODUCTO DISPONIBLE* ✅\nEl platillo *${producto.label}* vuelve a estar a la venta. ¡Ya pueden ofrecerlo de nuevo!`;
             try {
@@ -72,132 +144,45 @@ app.post('/webhook/alertas', async (req, res) => {
     res.status(200).send("Webhook Dolibarr procesado");
 });
 
-// ==========================================
-// 2. OÍDO PARA WHATSAPP (El Chatbot con Radar)
-// ==========================================
 app.post('/webhook/whatsapp', async (req, res) => {
     try {
         const webhookData = req.body;
-        console.log("📱 [RADAR WA] Webhook recibido tipo:", webhookData.typeWebhook);
-
         if (webhookData.typeWebhook === 'incomingMessageReceived' || webhookData.typeWebhook === 'outgoingMessageReceived') {
             const messageData = webhookData.messageData || {};
             let mensajeBruto = "";
-            
-            // Extraemos el texto sin importar si es un mensaje normal o una respuesta
             if (messageData.typeMessage === 'textMessage') {
                 mensajeBruto = messageData.textMessageData?.textMessage;
             } else if (messageData.typeMessage === 'extendedTextMessage') {
                 mensajeBruto = messageData.extendedTextMessageData?.text;
             }
-            
             const mensaje = (mensajeBruto || "").trim().toLowerCase();
             const chatId = webhookData.senderData?.chatId;
 
-            console.log(`💬 [RADAR WA] Mensaje leído en chat ${chatId}: "${mensaje}"`);
-
             if (mensaje === '!reporte') {
-                console.log("📊 [RADAR WA] Comando !reporte detectado. Preparando envío...");
                 const msj = `📊 *REPORTE RÁPIDO COMANDUP*\n\n🧾 *Tickets:* ${ticketsAtendidos}\n💰 *Ventas:* $${ventasDelDia.toFixed(2)}`;
                 const url = `https://7107.api.greenapi.com/waInstance${process.env.ID_INSTANCE}/sendMessage/${process.env.API_TOKEN_INSTANCE}`;
-                
                 await axios.post(url, { chatId: chatId, message: msj });
-                console.log("✅ [RADAR WA] Reporte enviado con éxito a WhatsApp.");
             }
         }
-    } catch (error) { 
-        console.error("❌ [RADAR WA] Error en el Chatbot:", error.message); 
-    }
-    
-    // Siempre hay que responderle un 200 a GreenAPI para que no crea que el servidor está caído
+    } catch (error) { console.error("❌ Error en el Chatbot:", error.message); }
     res.status(200).send("Webhook GreenAPI procesado");
 });
 
 // ==========================================
-// 3. CORTE DE CAJA AUTOMÁTICO (El Reloj Corregido)
+// 3. CORTE DE CAJA AUTOMÁTICO (El Reloj)
 // ==========================================
-// Agregamos el parámetro de Timezone para que respete el horario local y no el del servidor
 cron.schedule('0 22 * * *', async () => {
-    console.log("⏰ ¡Reloj activado! Generando cierre de caja automático...");
-    const textoCierre = `🌙 *CIERRE DE TURNO COMANDUP* 🌙\n\nEl turno ha finalizado de manera automática. Resumen de hoy:\n\n🧾 *Total de tickets:* ${ticketsAtendidos}\n💰 *Ingresos totales:* $${ventasDelDia.toFixed(2)}\n\n_La caja virtual ha sido reiniciada para mañana. ¡Buen descanso!_`;
-
+    const textoCierre = `🌙 *CIERRE DE TURNO COMANDUP* 🌙\n\nResumen de hoy:\n🧾 *Tickets:* ${ticketsAtendidos}\n💰 *Ingresos:* $${ventasDelDia.toFixed(2)}\n\n_La caja virtual ha sido reiniciada para mañana._`;
     try {
         const urlGreenAPI = `https://7107.api.greenapi.com/waInstance${process.env.ID_INSTANCE}/sendMessage/${process.env.API_TOKEN_INSTANCE}`;
         await axios.post(urlGreenAPI, { chatId: process.env.PHONE_GERENTE, message: textoCierre });
-        console.log("✅ Corte de caja automático enviado a WhatsApp.");
-
         ventasDelDia = 0;
         ticketsAtendidos = 0;
+    } catch (error) { console.error("❌ Error automático:", error.message); }
+}, { timezone: "America/Monterrey" });
 
-    } catch (error) {
-        console.error("❌ Error al enviar el corte automático:", error.message);
-    }
-}, {
-    timezone: "America/Monterrey"
-});
-
+// ENCENDIDO DEL SERVIDOR
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
     console.log(`🚀 Servidor ComandUp en línea (Puerto ${PORT})`);
-});
-
-
-
-
-const cors = require('cors');
-const mysql = require('mysql2/promise');
-
-// Permitir peticiones desde tu página en GitHub Pages
-app.use(cors()); 
-
-// Conexión a la BD de Railway (Soporta formato con y sin guión bajo)
-const dbPool = mysql.createPool({
-    host: process.env.MYSQLHOST || process.env.MYSQL_HOST,
-    user: process.env.MYSQLUSER || process.env.MYSQL_USER,
-    password: process.env.MYSQLPASSWORD || process.env.MYSQL_PASSWORD,
-    database: process.env.MYSQLDATABASE || process.env.MYSQL_DATABASE,
-    port: process.env.MYSQLPORT || process.env.MYSQL_PORT
-});
-
-// ==========================================
-// RUTA DE CHECKOUT (Crear nuevo cliente tras pagar)
-// ==========================================
-app.post('/api/register', async (req, res) => {
-    const { restaurante, email, password, plan } = req.body;
-    
-    // El sistema calcula las fechas automáticamente (1 año de plan)
-    const fechaInicio = new Date().toISOString().split('T')[0]; // Día de hoy
-    const fechaVencObj = new Date();
-    fechaVencObj.setFullYear(fechaVencObj.getFullYear() + 1);
-    const fechaVencimiento = fechaVencObj.toISOString().split('T')[0]; // Hoy, pero del próximo año
-
-    try {
-        // 1. Revisamos que el correo no esté repetido
-        const [existentes] = await dbPool.query('SELECT id FROM usuarios_saas WHERE email = ?', [email]);
-        if (existentes.length > 0) {
-            return res.status(400).json({ success: false, mensaje: 'Este correo ya tiene una cuenta activa.' });
-        }
-
-        // 2. Insertamos al cliente en la Base de Datos
-        await dbPool.query(
-            'INSERT INTO usuarios_saas (restaurante, email, password, rol, plan, fecha_inicio, fecha_vencimiento, estado) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-            [restaurante, email, password, 'cliente', plan, fechaInicio, fechaVencimiento, 'Activo']
-        );
-        
-        res.json({ success: true, mensaje: 'Pago procesado y cuenta creada.' });
-    } catch (error) {
-        res.status(500).json({ success: false, error: error.message });
-    }
-});
-
-// ==========================================
-// RUTA PARA VER TODOS LOS CLIENTES (Solo Admin)
-// ==========================================
-app.get('/api/clientes', async (req, res) => {
-    try {
-        const [rows] = await dbPool.query('SELECT * FROM usuarios_saas WHERE rol = "cliente"');
-        res.json({ success: true, clientes: rows });
-    } catch (error) {
-        res.status(500).json({ success: false, error: error.message });
-    }
 });

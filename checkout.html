@@ -135,7 +135,7 @@
             const plan = 'Pro'; // Aquí defines el plan que están comprando en esta página
 
             // Cambia el enlace por el de tu proyecto real en Railway
-            const respuesta = await fetch('https://tu-proyecto-railway.app/api/register', {
+            const respuesta = await fetch('https://comandup-webhook-production.up.railway.app/api/register', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ restaurante, email, password, plan })
