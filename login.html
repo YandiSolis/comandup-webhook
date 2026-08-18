@@ -51,28 +51,36 @@
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
 
-            // OJO: Recuerda cambiar 'tu-proyecto-railway.app' por el link real de tu Railway
-            const respuesta = await fetch('https://comandup-webhook-production.up.railway.app/api/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password })
-            });
+            try {
+                // Asegúrate de que esta sea tu URL de Railway real
+                const respuesta = await fetch('https://comandup-webhook-production.up.railway.app/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
 
-            const datos = await respuesta.json();
-
-            if (datos.success) {
-                // Guardamos los datos en el navegador
-                localStorage.setItem('usuarioLogueado', JSON.stringify(datos.usuario));
-
-                // El "Árbitro" de vistas
-                if (datos.usuario.rol === 'admin') {
-                    window.location.href = 'dashboard_admin.html'; 
-                } else {
-                    window.location.href = 'client_portal.html'; 
+                // Si el servidor de Railway está caído o arroja error 500
+                if (!respuesta.ok) {
+                    const errorTexto = await respuesta.text();
+                    throw new Error(`El servidor falló (Error ${respuesta.status}): ${errorTexto.substring(0, 100)}`);
                 }
-            } else {
-                // Ahora sí te dirá el error real (Ej. "Credenciales incorrectas" o "Access denied for user...")
-                alert("Error: " + (datos.mensaje || datos.error || "No se pudo conectar al servidor"));
+
+                const datos = await respuesta.json();
+
+                if (datos.success) {
+                    localStorage.setItem('usuarioLogueado', JSON.stringify(datos.usuario));
+                    if (datos.usuario.rol === 'admin') {
+                        window.location.href = 'dashboard_admin.html'; 
+                    } else {
+                        window.location.href = 'client_portal.html'; 
+                    }
+                } else {
+                    alert("Atención: " + (datos.mensaje || datos.error));
+                }
+            } catch (error) {
+                // Este es el radar: Nos dirá el problema real
+                alert("Fallo crítico de conexión:\n" + error.message);
+                console.error("Detalle del error:", error);
             }
         }
     </script>
